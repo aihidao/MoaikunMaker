@@ -18,7 +18,7 @@ A web-based level editor for the NES game "モアイくん (Moai-kun)".
 
 ### Online Usage
 
-Visit: [Demo Link]
+Visit: [Demo Link](https://aihidao.github.io/MoaikunMaker/)
 
 ### Local Setup
 
@@ -134,7 +134,6 @@ Issues and Pull Requests are welcome!
 - [ ] More level templates
 - [ ] Level validation (completability check)
 - [ ] Export level screenshots
-- [ ] Community level sharing platform
 
 ## 📄 License
 
