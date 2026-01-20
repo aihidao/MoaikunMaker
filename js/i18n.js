@@ -77,6 +77,10 @@ const i18n = {
             'welcomeTip3': '如果通过链接进入但未加载 ROM，只需上传 ROM 后，分享的关卡会自动开始。',
             'welcomeTip4': '这是初级版本，可能存在一些小 BUG，欢迎提交 Issue 反馈。',
             'welcomeUpload': '📤 上传 ROM 开始使用',
+            
+            // Operation Info
+            'operationSummaryLabel': '操作简介:',
+            'operationSummary': '移动(WASD)  |  攻击(J)  | 跳跃(K) | 开始(Enter) | 选择(Shift)',
         },
         
         'en-US': {
@@ -150,6 +154,10 @@ const i18n = {
             'welcomeTip3': 'If you access via a shared link without ROM loaded, just upload the ROM and the shared level will start automatically.',
             'welcomeTip4': 'This is an early version and may have some bugs. Feel free to submit Issues for feedback.',
             'welcomeUpload': '📤 Upload ROM to Start',
+            
+            // Operation Info
+            'operationSummaryLabel': 'Controls:',
+            'operationSummary': 'Move (WASD)  |  Attack (J)  |  Jump (K)|  Start (Enter) | Select (Shift)',
         }
     },
     

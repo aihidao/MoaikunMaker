@@ -28,6 +28,9 @@ class App {
         this.saveBtn = document.getElementById('saveBtn');
         this.writeRomBtn = document.getElementById('writeRomBtn');
         this.downloadBtn = document.getElementById('downloadBtn');
+
+        //
+        this.toggleInfoItems(false);
     }
 
     /**
@@ -442,6 +445,25 @@ class App {
         }
     }
 
+    // 切换信息栏显示状态
+    toggleInfoItems(showOperation) {
+        const operationItem = document.getElementById('operationInfoItem');
+        const toolItem = document.getElementById('currentToolInfoItem');
+        const mouseItem = document.getElementById('mousePositionInfoItem');
+        
+        if (showOperation) {
+            // 测试模式：显示操作信息，隐藏工具和鼠标信息
+            operationItem?.classList.add('active');
+            toolItem?.classList.remove('active');
+            mouseItem?.classList.remove('active');
+        } else {
+            // 编辑模式：隐藏操作信息，显示工具和鼠标信息
+            operationItem?.classList.remove('active');
+            toolItem?.classList.add('active');
+            mouseItem?.classList.add('active');
+        }
+    }
+
     // 切换模式，如果是测试模式则退出
     changeMode(){
         this.levelEditor.testMode = !this.testMode
@@ -449,7 +471,7 @@ class App {
             this.testMode = false;
             this.emulator.stop();
             this.levelEditor.render();
-            
+            this.toggleInfoItems(false); // 切换到编辑模式显示
             // 恢复按钮状态
             if (this.currentLevel >= 0) {
                 this.testLevelBtn.disabled = false;
@@ -465,6 +487,7 @@ class App {
             return true;
         }else{
             this.stopEmulatorBtn.disabled = false;
+            this.toggleInfoItems(true); // 切换到测试模式显示
         }
         this.testMode = true;
         return false;

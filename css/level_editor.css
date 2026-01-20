@@ -266,10 +266,14 @@ h1 {
 }
 
 .info-item {
-    display: flex;
+    display: none; /* 默认隐藏 */
     gap: 8px;
     font-size: 14px;
     color: #666;
+}
+
+.info-item.active {
+    display: flex; /* 激活时显示为flex布局 */
 }
 
 .info-item span:last-child {
