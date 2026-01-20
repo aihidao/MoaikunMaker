@@ -3,6 +3,12 @@
 English | [中文](README.md)
 
 A web-based level editor for the NES game "モアイくん (Moai-kun)".
+## 🔍 Quick Preview
+
+### Interface: 
+![Interface](https://aihidao.github.io/Pages/MoaikunMaker/docs/info.png)  
+### Gameplay: 
+![Play](https://aihidao.github.io/Pages/MoaikunMaker/docs/play.gif)
 
 ## ✨ Features
 
@@ -12,7 +18,6 @@ A web-based level editor for the NES game "モアイくん (Moai-kun)".
 - 💾 **ROM Editing** - Directly modify and export ROM files
 - 🌐 **Multi-language** - Switch between Chinese/English interface
 - 📋 **Level Management** - Drag-and-drop sorting, batch editing
-- 🎯 **Precise Control** - Map data, enemy configuration, scene selection
 
 ## 🚀 Quick Start
 
