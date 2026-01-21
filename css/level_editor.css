@@ -391,10 +391,14 @@ h1 {
     
     /* 确保canvas在移动端能正常滑动 */
     #levelCanvas {
+        transform-origin: top center;
+        transition: transform 0.3s ease;
         margin: 0;
     }
 
     .editor-layout.test-mode {
+        transform-origin: top center;
+        transition: transform 0.3s ease;
         margin-bottom: 720px;
     }
     
