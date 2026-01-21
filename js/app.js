@@ -496,7 +496,7 @@ class App {
             this.stopEmulatorBtn.disabled = true;
             return true;
         }else{
-            this.stopEmulatorBtn.disabled = false;
+            //this.stopEmulatorBtn.disabled = false;
             this.toggleInfoItems(true); // 切换到测试模式显示
         }
         this.testMode = true;
@@ -608,16 +608,14 @@ class App {
         }
         
         this.emulator.loadROM(romData);
+        this.emulator.quickStart();
 
         this.testLevelBtn.disabled = true;
         this.saveBtn.disabled =  true;
         this.writeRomBtn.disabled = true;
         this.testBtn.disabled = true;
         this.downloadBtn.disabled = true;
-        this.stopEmulatorBtn.disabled = false;
-
-        await this.emulator.quickStart();
-
+        //this.stopEmulatorBtn.disabled = false;
 
 
         this.showMessage('success', i18n.t("testingCurrentLevelSuccess"));
@@ -645,7 +643,7 @@ class App {
         this.writeRomBtn.disabled = true;
         this.testBtn.disabled = true;
         this.downloadBtn.disabled = true;
-        this.stopEmulatorBtn.disabled = false;
+        //this.stopEmulatorBtn.disabled = false;
 
         this.showMessage('success', i18n.t("emulatorStartSuccess"));
 

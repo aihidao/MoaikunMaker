@@ -298,6 +298,7 @@ class NesEmulator {
             imageData.data[i * 4 + 2] = (pixel >> 16) & 0xFF; // B
             imageData.data[i * 4 + 3] = 0xFF;                 // A
         }
+        //this.tempCtx.putImageData(imageData, 0, 0, 0, -8, nesWidth, nesHeight + 8);
         this.tempCtx.putImageData(imageData, 0, 0);
         
         // 清空主 canvas
@@ -347,6 +348,7 @@ class NesEmulator {
     
     start() {
         if (this.isRunning) return;
+        app.stopEmulatorBtn.disabled = false;
         const loadingTotal= NesEmulator.LOADING_WAIT_ROM_FRAME + NesEmulator.LOADING_WAIT_START_FRAME;
         this.loadingProgress = loadingTotal;
         
