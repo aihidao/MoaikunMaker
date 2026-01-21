@@ -1,6 +1,6 @@
 class NesEmulator {
     static LOADING_WAIT_ROM_FRAME = 40;
-    static LOADING_WAIT_START_FRAME = 290;
+    static LOADING_WAIT_START_FRAME = 306;
     constructor(canvasId) {
         this.canvas = document.getElementById(canvasId);
         this.ctx = this.canvas.getContext('2d');
@@ -24,6 +24,7 @@ class NesEmulator {
         this.initAudio();
         this.setupKeyboard(); // 初始化键盘控制
 
+        this.loadingImg = null;
         this.loadingProgress = 0;
     }
     
@@ -208,13 +209,9 @@ class NesEmulator {
         const canvasWidth = this.canvas.width;
         const canvasHeight = this.canvas.height;
 
-        // 创建临时 canvas 用于绘制原始帧
-        // if (!this.tempCanvas) {
-        //     this.tempCanvas = document.createElement('canvas');
-        //     this.tempCanvas.width = nesWidth;
-        //     this.tempCanvas.height = nesHeight;
-        //     this.tempCtx = this.tempCanvas.getContext('2d');
-        // }
+        if(this.loadingImg){
+            this.ctx.putImageData(this.loadingImg, 0, 0);
+        }
         
         // 1. 获取当前进度百分比
         const totalFrames = NesEmulator.LOADING_WAIT_ROM_FRAME + NesEmulator.LOADING_WAIT_START_FRAME;
@@ -319,6 +316,7 @@ class NesEmulator {
     }
 
     async quickStart(){
+        this.loadingImg = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
         this.loadingProgress = 0;
         const CHUNK_SIZE = 2;
         for(let i = 0; i <  NesEmulator.LOADING_WAIT_ROM_FRAME; i++){
@@ -348,8 +346,9 @@ class NesEmulator {
     }
     
     start() {
-        this.loadingProgress = NesEmulator.LOADING_WAIT_ROM_FRAME + NesEmulator.LOADING_WAIT_START_FRAME
         if (this.isRunning) return;
+        const loadingTotal= NesEmulator.LOADING_WAIT_ROM_FRAME + NesEmulator.LOADING_WAIT_START_FRAME;
+        this.loadingProgress = loadingTotal;
         
         this.isRunning = true;
         this.lastFrameTime = performance.now();

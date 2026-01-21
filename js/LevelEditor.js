@@ -452,11 +452,13 @@ class LevelEditor {
         header.addEventListener('mousedown', dragStart);
         document.addEventListener('mousemove', drag);
         document.addEventListener('mouseup', dragEnd);
+
+
         
         function dragStart(e) {
             initialX = e.clientX - xOffset;
             initialY = e.clientY - yOffset;
-            
+
             if (e.target === header || header.contains(e.target)) {
                 isDragging = true;
             }
@@ -465,7 +467,10 @@ class LevelEditor {
         function drag(e) {
             if (isDragging) {
                 e.preventDefault();
-                
+                // let wideScreenOffset = 0;
+                // if(!this.isWideScreen){
+                //     wideScreenOffset = this.canvas.width / 4;
+                // }
                 currentX = e.clientX - initialX;
                 currentY = e.clientY - initialY;
                 
@@ -477,6 +482,9 @@ class LevelEditor {
         }
         
         function dragEnd(e) {
+            // if(!this.isWideScreen){
+            //     e.clientX += this.canvas.width / 4;
+            // }
             initialX = currentX;
             initialY = currentY;
             isDragging = false;
@@ -595,8 +603,14 @@ class LevelEditor {
         if(this.testMode){
             return;
         }
+
+        let wideScreenOffset = 0;
+        if(!this.isWideScreen){
+                wideScreenOffset = this.canvas.width / 4;
+        }
+
         const rect = this.canvas.getBoundingClientRect();
-        const x = Math.floor((e.clientX - rect.left) / Config.TILE_SIZE);
+        const x = Math.floor((e.clientX - rect.left - wideScreenOffset) / Config.TILE_SIZE);
         const y = Math.floor((e.clientY - rect.top) / Config.TILE_SIZE);
         
         if (x >= 0 && x < Config.GRID_WIDTH && y >= 0 && y < Config.GRID_HEIGHT) {
@@ -817,13 +831,25 @@ class LevelEditor {
         if(this.testMode){
             return;
         }
+
         // 清空画布
+        // this.ctx.fillStyle = '#000000';
+        // this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        if(!this.isWideScreen){
+            //将绘制在 canvas 中央
+            this.ctx.save();
+            this.ctx.translate(this.canvas.width / 4, 0);
+        }
+
         
         // 1. 绘制背景
         if (this.images.get(Config.BG)) {
             this.ctx.drawImage(this.images.get(Config.BG), 0, 0, this.canvas.width / 2, this.canvas.height);
-            this.ctx.drawImage(this.images.get(Config.BG), this.canvas.width / 2, 0, this.canvas.width / 2, this.canvas.height);
+            if(this.isWideScreen){
+                this.ctx.drawImage(this.images.get(Config.BG), this.canvas.width / 2, 0, this.canvas.width / 2, this.canvas.height);
+            }
         }
         
         // 2. 绘制网格（半透明）
@@ -874,14 +900,34 @@ class LevelEditor {
         }
 
         //如果不是宽场景,则绘制遮罩
-        if(!this.isWideScreen){
-            this.ctx.fillStyle = 'rgba(255, 0, 0, 0.7)';
-            this.ctx.fillRect(this.canvas.width / 2, 0, this.canvas.width / 2, this.canvas.height);
-        }
+        // if(!this.isWideScreen){
+        //     this.ctx.fillStyle = 'rgba(255, 0, 0, 0.7)';
+        //     this.ctx.fillRect(this.canvas.width / 2, 0, this.canvas.width / 2, this.canvas.height);
+        // }
         
         // 7. 绘制预放置框
         if (this.mouseGridPos && this.currentTool) {
             this.drawPreview();
+        }
+
+        //恢复 canvas 绘制边界
+        if(!this.isWideScreen){
+            //将绘制在 canvas 中央
+            //绘制边界
+            //两边涂黑
+            this.ctx.fillStyle = '#000000';
+            this.ctx.fillRect(-this.canvas.width / 4, 0, this.canvas.width / 4, this.canvas.height);
+            this.ctx.fillRect(this.canvas.width  / 2, 0, this.canvas.width / 4, this.canvas.height);
+
+            this.ctx.strokeStyle = '#000000';
+            this.ctx.lineWidth = 2;
+            this.ctx.strokeRect(0 , 0, this.canvas.width / 2, this.canvas.height);
+            this.ctx.restore();
+        }else{
+            //绘制边界
+            this.ctx.strokeStyle = '#000000';
+            this.ctx.lineWidth = 2;
+            this.ctx.strokeRect(0, 0, this.canvas.width, this.canvas.height);
         }
     }
     
