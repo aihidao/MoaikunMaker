@@ -277,7 +277,7 @@ class RomEditor {
             romData[offset + 1] = (cpuAddr >> 8) & 0xFF; // 高字节
         }
 
-        // 2. 写入所有关卡数据（紧凑排列）
+        // 3. 写入所有关卡数据（紧凑排列）
         const firstLevelStart = levels[0].romAddress;
         let writePos = firstLevelStart;
         
@@ -299,13 +299,14 @@ class RomEditor {
         }
 
         // 4. 获取怪物数据基地址
-        const monsterBaseAddress = this.readMonsterAddress(romData);
+        const monsterBaseAddress = RomEditor.readMonsterAddress(romData);
         
         // 5. 写入所有怪物数据（按重新排序后的顺序）
         let monsterWritePos = monsterBaseAddress;
-        
-        for (let i = 0; i < levelCount; i++) {
-            const level = levels[i];
+        let levelIndex = 0;
+        let level1MonsterData = [];
+        for (levelIndex = 0; levelIndex < levelCount; levelIndex++) {
+            const level = levels[levelIndex];
             const monsterData = level.monsterData;
             
             // 更新怪物数据地址
@@ -317,9 +318,39 @@ class RomEditor {
             // 写入怪物数据
             for (let j = 0; j < monsterData.length; j++) {
                 romData[monsterWritePos++] = monsterData[j];
+                if(levelIndex === 0){
+                    level1MonsterData.push(monsterData[j]);
+                }
             }
             level.modified = false;
         }
+
+        //如果levelCount小于 8，则需要修改第七八关地址
+        //则后续不存在的关卡全部复制第一关的怪物内容
+        if(levelIndex < 8){
+            for(;levelIndex < 9; levelIndex++){
+                for (let j = 0; j < level1MonsterData.length; j++) {
+                    romData[monsterWritePos++] = level1MonsterData[j];
+                }
+            }
+        }
+
+        //如果关书小于 七八，将第七第八关地址改为第一关地址，否则演示模式会卡死
+        // 怪物地址也要指向第一关，否则会出意外
+        if (levelCount < 8){
+            const offset8 = Config.ADDRESS_TABLE_START + 7 * 2;
+            const cpuAddr = levels[0].cpuAddress;
+            romData[offset8] = cpuAddr & 0xFF;
+            romData[offset8 + 1] = (cpuAddr >> 8) & 0xFF;
+        }
+
+        if(levelCount < 7){
+            const offset7 = Config.ADDRESS_TABLE_START + 6 * 2;
+            const cpuAddr = levels[0].cpuAddress;
+            romData[offset7] = cpuAddr & 0xFF;
+            romData[offset7 + 1] = (cpuAddr >> 8) & 0xFF;
+        }
+
         //this.modified = false;
         document.getElementById('writeRomBtn').disabled = true;
         document.getElementById('downloadBtn').disabled = false;

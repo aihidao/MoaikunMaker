@@ -164,6 +164,11 @@ class App {
     initEventListeners() {
         document.getElementById('fileInput').addEventListener('change', 
             (e) => this.handleFileSelect(e));
+
+                    // 初始化移动控制器
+        if (!this.mobileController) {
+            this.mobileController = new MobileGameController(this.emulator);
+        }
         
         // 关卡列表抽屉切换
         const sidebarToggle = document.getElementById('sidebarToggle');
@@ -729,29 +734,9 @@ class App {
             this.emulator = new NesEmulator('levelCanvas');
         }
         
-        // 初始化移动控制器
-        if (!this.mobileController) {
-            this.mobileController = new MobileGameController(this.emulator);
-        }
+
         
         this.emulator.loadROM(this.romEditor.romData);
-        
-        // 添加测试模式类，在移动端缩小显示
-        const canvasContainer = document.querySelector('.canvas-container');
-        if (canvasContainer) {
-            canvasContainer.classList.add('test-mode');
-        }
-
-        const editorLayout = document.querySelector('.editor-layout');
-        if (editorLayout) {
-            editorLayout.classList.add('test-mode');
-        }
-        
-        // 添加body的test-mode类，用于隐藏其他UI元素
-        document.body.classList.add('test-mode');
-        
-        // 显示移动控制面板
-        this.mobileController.show();
         
         // 延迟滚动到中心位置，等待 CSS 动画完成
         setTimeout(() => {

@@ -383,6 +383,24 @@ class NesEmulator {
     
     start() {
         if (this.isRunning) return;
+                // 添加测试模式类，在移动端缩小显示
+        const canvasContainer = document.querySelector('.canvas-container');
+
+        if (canvasContainer) {
+            canvasContainer.classList.add('test-mode');
+        }
+
+        const editorLayout = document.querySelector('.editor-layout');
+        if (editorLayout) {
+            editorLayout.classList.add('test-mode');
+        }
+        
+        // 添加body的test-mode类，用于隐藏其他UI元素
+        document.body.classList.add('test-mode');
+        
+        // 显示移动控制面板
+        app.mobileController.show();
+
         app.stopEmulatorBtn.disabled = false;
         const loadingTotal= NesEmulator.LOADING_WAIT_ROM_FRAME + NesEmulator.LOADING_WAIT_START_FRAME;
         this.loadingProgress = loadingTotal;
