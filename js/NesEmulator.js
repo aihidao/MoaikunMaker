@@ -18,7 +18,7 @@ class NesEmulator {
         // 音频设置
         this.audioContext = null;
         this.audioBuffer = [];
-        this.audioBufferSize = 4096;
+        this.audioBufferSize = 8192;
         
         this.initNES();
         this.initAudio();
@@ -87,6 +87,13 @@ class NesEmulator {
                     }
                 }
             };
+
+            // 额外：页面获得焦点时也试一次
+            window.addEventListener('focus', () => {
+            if (this.audioContext?.state !== 'running') {
+                this.audioContext.resume();
+            }
+            });
             
             console.log('音频系统初始化成功');
         } catch (error) {
@@ -314,6 +321,34 @@ class NesEmulator {
             0, 0, nesWidth, nesHeight,           // 源矩形（完整画面）
             offsetX, offsetY, scaledWidth, scaledHeight  // 目标矩形
         );
+    }
+
+    /**
+     * 滚动 canvas 容器到中心位置，确保 NES 模拟器可见
+     */
+    scrollCanvasToCenter() {
+        const canvasContainer = this.canvas.parentElement;
+        if (!canvasContainer) return;
+        
+        // 计算需要滚动的位置，让 canvas 的中心区域显示在容器中央
+        const canvasWidth = this.canvas.offsetWidth;
+        const containerWidth = canvasContainer.offsetWidth;
+        
+        // 如果 canvas 宽度小于等于容器宽度，不需要滚动
+        if (canvasWidth <= containerWidth) {
+            canvasContainer.scrollLeft = 0;
+            return;
+        }
+        
+        // 计算滚动位置：canvas 中心对齐到容器中心
+        // NES 模拟器在 canvas 的中心位置（因为它的大小是 canvas 的一半）
+        const scrollPosition = (canvasWidth - containerWidth) / 2;
+        
+        // 平滑滚动到计算的位置
+        canvasContainer.scrollTo({
+            left: scrollPosition,
+            behavior: 'smooth'
+        });
     }
 
     async quickStart(){

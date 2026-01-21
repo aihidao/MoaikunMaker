@@ -127,6 +127,7 @@ const i18n = {
             'invalidHexValue': '无效的十六进制值: {hexValue}' ,
             "setLevelCountError":'关卡总数必须在1-255之间',
             "invalidLevelIndexError":'无效的关卡索引',   
+            'clearRomCacheConfirm': '确定要清除缓存的 ROM 吗？',
 
 
         },
@@ -251,6 +252,7 @@ const i18n = {
             'invalidHexValue': 'Invalid hex value: {hexValue}',
             "setLevelCountError": 'Total levels must be between 1 and 255',
             "invalidLevelIndexError": 'Invalid level index',
+            'clearRomCacheConfirm': 'Are you sure you want to clear the cached ROM?',
         }
     },
     

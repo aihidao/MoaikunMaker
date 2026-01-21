@@ -41,7 +41,7 @@ class LevelEditor {
         this.enemyBtns = [];
         this.playerBtn = null;
         this.doorBtn = null;
-
+        this.eraserBtn = null;
         
         // 图片资源
         this.images = new Map();
@@ -289,7 +289,7 @@ class LevelEditor {
         const imgSrc = '';
 
         const img = document.createElement('img');
-                
+        
         if(imgSrc !== null){
             img.src = imgSrc;
         }else{
@@ -316,6 +316,9 @@ class LevelEditor {
 
         img.onerror = () => {
             // 创建禁止符号容器
+            if(type === 'eraser'){
+                return;
+            }
             const prohibitIcon = document.createElement('div');
             prohibitIcon.style.cssText = `
                 width: 32px;
@@ -332,14 +335,40 @@ class LevelEditor {
             // 替换img为禁止符号
             //img.replaceWith(prohibitIcon);
             img.style.display = 'none';
+
             btn.appendChild(prohibitIcon);
         };
 
         const span = document.createElement('span');
-        span.textContent = `${ Config.RESOURCE_IMG_CONFIG[imgName].name}`;
+        if(type !== 'eraser'){
+            span.textContent = `${ Config.RESOURCE_IMG_CONFIG[imgName].name}`;
+        }else{
+            span.textContent = i18n.t("Eraser") || 'Eraser';
+        }
         
-        btn.appendChild(img);
-        //btn.appendChild(span);
+        if(type !== 'eraser'){
+            btn.appendChild(img);
+        }else{
+            // 创建禁止符号容器
+            const prohibitIcon = document.createElement('div');
+            prohibitIcon.style.cssText = `
+                width: 32px;
+                height: 32px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 24px;
+                color: #999;
+                margin-bottom: 4px;
+            `;
+            prohibitIcon.textContent = '❌';
+            // 替换img为禁止符号
+            //img.replaceWith(prohibitIcon);
+            //img.style.display = 'none';
+            btn.appendChild(prohibitIcon);
+        }
+        //span.textContent = imgName;
+        btn.appendChild(span);
         container.appendChild(btn);
         
         //btn.addEventListener('click', () => this.selectTool(type, id));
@@ -380,6 +409,9 @@ class LevelEditor {
         
         this.doorBtn = this.createButton("door", container, "Door");
         this.doorBtn.id = 'doorBtn';
+
+        this.eraserBtn = this.createButton("eraser", container, "Eraser");
+        this.eraserBtn.id = 'eraserBtn';
     }
     
     createTileButtons() {
@@ -515,6 +547,12 @@ class LevelEditor {
             return false;
         });
         
+        // Canvas 容器滚动事件监听（用于移动端边缘提示）
+        const canvasContainer = this.canvas.parentElement;
+        if (canvasContainer) {
+            this.setupScrollEdgeDetection(canvasContainer);
+        }
+        
         // 操作按钮
         document.getElementById('clearBtn').addEventListener('click', () => this.clearMap());
         
@@ -541,6 +579,40 @@ class LevelEditor {
             }
             applyToRomBtn.addEventListener('click', () => this.applyToRomEditor());
         }
+    }
+    
+    /**
+     * 设置滚动边缘检测（移动端优化）
+     */
+    setupScrollEdgeDetection(container) {
+        const updateEdgeClasses = () => {
+            const scrollLeft = container.scrollLeft;
+            const scrollWidth = container.scrollWidth;
+            const clientWidth = container.clientWidth;
+            
+            // 检测是否在左边缘（允许5px误差）
+            if (scrollLeft <= 5) {
+                container.classList.add('at-left-edge');
+            } else {
+                container.classList.remove('at-left-edge');
+            }
+            
+            // 检测是否在右边缘（允许5px误差）
+            if (scrollLeft + clientWidth >= scrollWidth - 5) {
+                container.classList.add('at-right-edge');
+            } else {
+                container.classList.remove('at-right-edge');
+            }
+        };
+        
+        // 初始检测
+        updateEdgeClasses();
+        
+        // 滚动时更新
+        container.addEventListener('scroll', updateEdgeClasses);
+        
+        // 窗口大小改变时更新
+        window.addEventListener('resize', updateEdgeClasses);
     }
     
     /**
@@ -737,6 +809,10 @@ class LevelEditor {
         } else if (this.currentTool === 'door') {
             // 放置门
             this.doorPos = { x, y };
+        } else if (this.currentTool === 'eraser') {
+            // 执行清除操作
+            this.performErase(x, y);
+            //return; // 提前返回，避免重复渲染
         }
         this.saveStatusEnabled();
         // 立即渲染更新

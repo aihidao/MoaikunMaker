@@ -209,7 +209,7 @@ h1 {
 
 .special-buttons {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 8px;
 }
 
@@ -301,6 +301,11 @@ h1 {
     border-radius: 8px;
     padding: 20px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    /* 支持横向滚动 */
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch; /* iOS 平滑滚动 */
+    scroll-behavior: smooth; /* 平滑滚动效果 */
 }
 
 #levelCanvas {
@@ -309,6 +314,8 @@ h1 {
     margin: 0 auto;
     cursor: crosshair;
     image-rendering: pixelated;
+    /* 最小宽度确保canvas不会被压缩 */
+    min-width: 1024px;
 }
 
 .info-panel {
@@ -354,4 +361,306 @@ h1 {
 
 .toolbar::-webkit-scrollbar-thumb:hover {
     background: #555;
+}
+
+/* 测试模式下的缩放样式 */
+.canvas-container.test-mode {
+    transform-origin: top center;
+    transition: transform 0.3s ease;
+}
+
+/* 移动端优化 */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    .editor-layout {
+        display: flex;
+        margin-left: -25%;
+        margin-right: -25%;
+        gap: 20px;
+        justify-content: center;
+    }
+    
+    .canvas-container {
+        padding: 10px;
+        /* 添加滚动提示的渐变边缘效果 */
+        position: relative;
+    }
+    
+    /* 确保canvas在移动端能正常滑动 */
+    #levelCanvas {
+        margin: 0;
+    }
+
+    .editor-layout.test-mode {
+        margin-bottom: 720px;
+    }
+    
+    /* 竖屏模式下，测试时缩小canvas容器以显示完整游戏界面 */
+    .canvas-container.test-mode {
+        transform: scale(0.75);
+        margin-bottom: -65%;
+        margin-left: -25%;
+        margin-right: -25%;
+    }
+    
+    /* 在移动端显示滚动提示 */
+    .canvas-container::before,
+    .canvas-container::after {
+        content: '';
+        position: absolute;
+        top: 20px;
+        bottom: 20px;
+        width: 30px;
+        pointer-events: none;
+        z-index: 10;
+        opacity: 0.3;
+        transition: opacity 0.3s;
+    }
+    
+    /* 左侧渐变提示 */
+    .canvas-container::before {
+        left: 0;
+        background: linear-gradient(to right, rgba(0,0,0,0.1), transparent);
+    }
+    
+    /* 右侧渐变提示 */
+    .canvas-container::after {
+        right: 0;
+        background: linear-gradient(to left, rgba(0,0,0,0.1), transparent);
+    }
+    
+    /* 当滚动到左边缘时隐藏左侧提示 */
+    .canvas-container.at-left-edge::before {
+        opacity: 0;
+    }
+    
+    /* 当滚动到右边缘时隐藏右侧提示 */
+    .canvas-container.at-right-edge::after {
+        opacity: 0;
+    }
+}
+
+/* 自定义滚动条样式（移动端也生效） */
+.canvas-container::-webkit-scrollbar {
+    height: 8px;
+}
+
+.canvas-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.canvas-container::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.canvas-container::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* 移动端游戏控制面板 */
+.mobile-game-controls {
+    touch-action: none;             /* 禁用所有默认触摸行为，包括滚动 */
+    display: none;
+    position: fixed;
+    bottom: -100%;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.95), rgba(0, 0, 0, 0.85));
+    padding: 20px;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
+    z-index: 10000;
+    transition: bottom 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mobile-game-controls.active {
+    bottom: 0;
+}
+
+/* 停止按钮 */
+.control-stop-btn {
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #ff4444, #cc0000);
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(255, 68, 68, 0.5);
+    transition: all 0.2s;
+}
+
+.control-stop-btn:active {
+    transform: translateX(-50%) scale(0.9);
+    box-shadow: 0 2px 8px rgba(255, 68, 68, 0.8);
+}
+
+.stop-icon {
+    font-size: 28px;
+    color: white;
+    line-height: 1;
+}
+
+/* 控制器布局 */
+.controls-layout {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 60px;
+    padding: 0 20px;
+}
+
+/* 十字键容器 */
+.dpad-container {
+    display: grid;
+    grid-template-columns: repeat(3, 50px);
+    grid-template-rows: repeat(3, 50px);
+    gap: 4px;
+    margin-right: 20px;
+}
+
+.dpad-btn {
+    background: linear-gradient(135deg, #444, #222);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: all 0.1s;
+
+      /* 核心：禁止文本选择 */
+    user-select: none;
+    -webkit-user-select: none;     /* Safari/iOS */
+    -moz-user-select: none;        /* Firefox */
+    -ms-user-select: none;         /* Edge/IE */
+    -webkit-touch-callout: none;
+    touch-action: manipulation;    /* 允许 tap，但禁用双击缩放等 */
+}
+
+.dpad-btn:active {
+    background: linear-gradient(135deg, #666, #444);
+    transform: scale(0.95);
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.dpad-up { grid-area: 1 / 2; }
+.dpad-left { grid-area: 2 / 1; }
+.dpad-center { 
+    grid-area: 2 / 2; 
+    background: transparent; 
+    border: none;
+    pointer-events: none;
+}
+.dpad-right { grid-area: 2 / 3; }
+.dpad-down { grid-area: 3 / 2; }
+
+/* AB按钮容器 */
+.action-buttons {
+    display: flex;
+    flex-direction: column; 
+    gap: 15px;
+    align-items: center;
+    /* 核心：禁止文本选择 */
+    user-select: none;
+    -webkit-user-select: none;     /* Safari/iOS */
+    -moz-user-select: none;        /* Firefox */
+    -ms-user-select: none;         /* Edge/IE */
+    -webkit-touch-callout: none;
+    touch-action: manipulation;    /* 允许 tap，但禁用双击缩放等 */
+}
+
+.action-btn {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    font-size: 22px;
+    font-weight: bold;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: all 0.1s;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.btn-a {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    margin-left: 20px;
+}
+
+.btn-b {
+    background: linear-gradient(135deg, #f39c12, #d68910);
+    margin-right: 20px;
+}
+
+.action-btn:active {
+    transform: scale(0.9);
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Select Start 按钮 */
+.system-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 25px;
+    /* 核心：禁止文本选择 */
+    user-select: none;
+    -webkit-user-select: none;     /* Safari/iOS */
+    -moz-user-select: none;        /* Firefox */
+    -ms-user-select: none;         /* Edge/IE */
+    -webkit-touch-callout: none;
+    touch-action: manipulation;    /* 允许 tap，但禁用双击缩放等 */
+}
+
+.system-btn {
+    padding: 12px 30px;
+    background: linear-gradient(135deg, #555, #333);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: all 0.1s;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+}
+
+.system-btn:active {
+    transform: scale(0.95);
+    background: linear-gradient(135deg, #666, #444);
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* 移动端显示控制面板 */
+@media (max-width: 768px) {
+    .mobile-game-controls {
+        display: block;
+    }
+    
+    /* 测试模式下隐藏其他UI元素 */
+    body.test-mode .button-group,
+    body.test-mode .sidebar-toggle,
+    body.test-mode .toolbar-toggle {
+        display: none !important;
+    }
 }

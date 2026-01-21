@@ -18,6 +18,9 @@ class App {
         this.testMode = false;
         this.romCache = RomCache.getInstance();
         
+        // 移动端游戏控制器（延迟初始化）
+        this.mobileController = null;
+        
         this.initEventListeners();
         this.initCache();
        
@@ -216,24 +219,28 @@ class App {
         const clearCacheBtn = document.getElementById('clearCacheBtn');
         if (clearCacheBtn) {
             clearCacheBtn.addEventListener('click', async () => {
-                if (confirm('确定要清除缓存的 ROM 文件吗？')) {
-                    try {
-                        await this.romCache.clearCache();
-                        this.showMessage('success', i18n.t('cacheCleanSuccess'));
-                        
-                        // 更新按钮状态
-                        const romSelectBtn = document.getElementById('romSelectBtn');
-                        if (romSelectBtn) {
-                            romSelectBtn.textContent = i18n.t('selectNesRomFile');
-                            romSelectBtn.classList.remove('loaded');
-                            romSelectBtn.title = '';
-                        }
-                    } catch (error) {
-                        this.showMessage('error', i18n.t('cacheCleanError'));
-                        console.error(error);
-                    }
-                }
+                await this.clearCache();
             });
+        }
+    }
+
+    async clearCache() {
+        if (confirm(i18n.t('clearRomCacheConfirm'))) {
+            try {
+                await this.romCache.clearCache();
+                this.showMessage('success', i18n.t('cacheCleanSuccess'));
+                
+                // 更新按钮状态
+                const romSelectBtn = document.getElementById('romSelectBtn');
+                if (romSelectBtn) {
+                    romSelectBtn.textContent = i18n.t('selectNesRomFile');
+                    romSelectBtn.classList.remove('loaded');
+                    romSelectBtn.title = '';
+                }
+            } catch (error) {
+                this.showMessage('error', i18n.t('cacheCleanError'));
+                console.error(error);
+            }
         }
     }
 
@@ -493,6 +500,26 @@ class App {
             this.emulator.stop();
             this.levelEditor.render();
             this.toggleInfoItems(false); // 切换到编辑模式显示
+            
+            // 移除测试模式类，恢复正常大小
+            const canvasContainer = document.querySelector('.canvas-container');
+            if (canvasContainer) {
+                canvasContainer.classList.remove('test-mode');
+            }
+
+            const editorLayout = document.querySelector('.editor-layout');
+            if (editorLayout) {
+                editorLayout.classList.remove('test-mode');
+            }
+            
+            // 移除body的test-mode类
+            document.body.classList.remove('test-mode');
+            
+            // 隐藏移动控制面板
+            if (this.mobileController) {
+                this.mobileController.hide();
+            }
+            
             // 恢复按钮状态
             if (this.currentLevel >= 0) {
                 this.testLevelBtn.disabled = false;
@@ -520,6 +547,26 @@ class App {
             this.showMessage('warning', i18n.t("emulatorNotRunningWarning"));
             return;
         }
+        
+        // 移除测试模式类，恢复正常大小
+        const canvasContainer = document.querySelector('.canvas-container');
+        if (canvasContainer) {
+            canvasContainer.classList.remove('test-mode');
+        }
+
+        const editorLayout = document.querySelector('.editor-layout');
+        if (editorLayout) {
+            editorLayout.classList.remove('test-mode');
+        }
+        
+        // 移除body的test-mode类
+        document.body.classList.remove('test-mode');
+        
+        // 隐藏移动控制面板
+        if (this.mobileController) {
+            this.mobileController.hide();
+        }
+        
         this.changeMode();
         this.showMessage('info', i18n.t("emulatorStopInfo"));
     }
@@ -618,7 +665,43 @@ class App {
             this.emulator = new NesEmulator('levelCanvas');
         }
         
+        // 初始化移动控制器
+        if (!this.mobileController) {
+            this.mobileController = new MobileGameController(this.emulator);
+        }
+        
         this.emulator.loadROM(romData);
+        
+        // 添加测试模式类，在移动端缩小显示
+        const canvasContainer = document.querySelector('.canvas-container');
+        if (canvasContainer) {
+            canvasContainer.classList.add('test-mode');
+            if(window.innerWidth < 768){
+                document.querySelector('#levelCanvas').scrollIntoView({
+                    behavior: 'smooth',    // 平滑滚动（推荐）  也可写 'auto'（瞬间跳过去）
+                    block: 'start',        // 垂直方向：顶部对齐
+                    inline: 'nearest'      // 水平方向：就近（一般用不到特别指定）
+                });
+            }
+
+        }
+
+        const editorLayout = document.querySelector('.editor-layout');
+        if (editorLayout) {
+            editorLayout.classList.add('test-mode');
+        }
+        
+        // 添加body的test-mode类，用于隐藏其他UI元素
+        document.body.classList.add('test-mode');
+        
+        // 显示移动控制面板
+        this.mobileController.show();
+        
+        // 延迟滚动到中心位置，等待 CSS 动画完成
+        setTimeout(() => {
+            this.emulator.scrollCanvasToCenter();
+        }, 400); // 等待 CSS transition 完成（0.3s + 缓冲）
+        
         this.emulator.quickStart();
 
         this.testLevelBtn.disabled = true;
@@ -646,7 +729,35 @@ class App {
             this.emulator = new NesEmulator('levelCanvas');
         }
         
+        // 初始化移动控制器
+        if (!this.mobileController) {
+            this.mobileController = new MobileGameController(this.emulator);
+        }
+        
         this.emulator.loadROM(this.romEditor.romData);
+        
+        // 添加测试模式类，在移动端缩小显示
+        const canvasContainer = document.querySelector('.canvas-container');
+        if (canvasContainer) {
+            canvasContainer.classList.add('test-mode');
+        }
+
+        const editorLayout = document.querySelector('.editor-layout');
+        if (editorLayout) {
+            editorLayout.classList.add('test-mode');
+        }
+        
+        // 添加body的test-mode类，用于隐藏其他UI元素
+        document.body.classList.add('test-mode');
+        
+        // 显示移动控制面板
+        this.mobileController.show();
+        
+        // 延迟滚动到中心位置，等待 CSS 动画完成
+        setTimeout(() => {
+            this.emulator.scrollCanvasToCenter();
+        }, 400); // 等待 CSS transition 完成（0.3s + 缓冲）
+        
         this.emulator.start();
 
         this.testLevelBtn.disabled = true;
@@ -1151,6 +1262,10 @@ function writeToROM() {
     app.writeToROM();
 }
 
+async function clearCache(){
+    await app.clearCache();
+}
+
 /**
  * 开始编辑关卡顺序
  */
@@ -1250,5 +1365,30 @@ document.addEventListener('DOMContentLoaded', () => {
     const activeBtn = document.querySelector(`.lang-btn[onclick*="${savedLang}"]`);
     if (activeBtn) {
         activeBtn.classList.add('active');
+    }
+});
+
+/**
+ * 切换移动端菜单
+ */
+function toggleMobileMenu() {
+    const menu = document.getElementById('mobileDropdownMenu');
+    if (menu) {
+        menu.classList.toggle('active');
+    }
+}
+
+/**
+ * 点击页面其他地方关闭菜单
+ */
+document.addEventListener('click', (e) => {
+    const menu = document.getElementById('mobileDropdownMenu');
+    const menuBtn = document.getElementById('mobileMenuBtn');
+    
+    if (menu && menuBtn) {
+        // 如果点击的不是菜单按钮也不是菜单内容，则关闭菜单
+        if (!menuBtn.contains(e.target) && !menu.contains(e.target)) {
+            menu.classList.remove('active');
+        }
     }
 });
