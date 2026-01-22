@@ -240,7 +240,7 @@ class NesEmulator {
         this.ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
         // 4. 加载条尺寸设计
-        const barWidth = canvasWidth * 0.7;  // 宽度占屏幕 70%
+        const barWidth = canvasWidth * 0.4;  // 宽度占屏幕 70%
         const barHeight = 8;       // 高度
         const x = (canvasWidth - barWidth) / 2;
         const y = canvasHeight * 0.8;         // 位置在屏幕 80% 处（偏下）
