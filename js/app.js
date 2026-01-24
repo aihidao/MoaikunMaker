@@ -21,6 +21,9 @@ class App {
         // 移动端游戏控制器（延迟初始化）
         this.mobileController = null;
         
+        // iOS特殊优化
+        this.applyIOSFixes();
+        
         this.initEventListeners();
         this.initCache();
        
@@ -35,6 +38,24 @@ class App {
         this.sortable = null;
         //
         this.toggleInfoItems(false);
+    }
+    
+    /**
+     * 应用iOS特殊修复
+     */
+    applyIOSFixes() {
+        const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+        if (isIOS) {
+            // 为body添加iOS标记类
+            document.body.classList.add('ios-device');
+            
+            // 强制重新计算viewport
+            setTimeout(() => {
+                window.scrollTo(0, 0);
+                // 触发一次resize事件，确保布局正确
+                window.dispatchEvent(new Event('resize'));
+            }, 100);
+        }
     }
 
     /**

@@ -4,6 +4,15 @@
     box-sizing: border-box;
 }
 
+html {
+    /* iOS优化：防止双击缩放 */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    /* 确保html使用全部宽度 */
+    width: 100%;
+    overflow-x: hidden;
+}
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     padding-top: 55px;
@@ -14,6 +23,12 @@ body {
     overscroll-behavior-y: contain;
     -webkit-overflow-scrolling: touch;
     overflow-x: hidden;
+    /* 防止iOS自动调整文本大小 */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    /* iOS优化：确保使用全部可用宽度 */
+    width: 100%;
+    position: relative;
 }
 
 /* 欢迎提示页面 */
@@ -332,6 +347,12 @@ body {
         position: relative;
         height: auto;
         padding: 10px;
+        /* 使用100%屏幕宽度 */
+        width: 100vw;
+        max-width: 100vw;
+        left: 0;
+        margin: 0;
+        box-sizing: border-box;
     }
     
     .top-bar h1 {
@@ -341,6 +362,10 @@ body {
     
     body {
         padding-top: 0;
+        /* iOS优化：移除宽度限制，使用全部屏幕宽度 */
+        max-width: 100vw;
+        width: 100%;
+        padding: 0;
     }
     
     /* 隐藏桌面端的按钮 */
@@ -436,6 +461,53 @@ h1 {
     position: relative;
     /* iOS滚动优化 */
     overscroll-behavior: contain;
+}
+
+/* 移动端main-layout居中对齐 */
+@media (pointer: coarse) {
+    .main-layout {
+        flex-direction: column;
+        align-items: center;
+        margin: 0;
+        padding: 10px 0;
+        width: 100%;
+    }
+    
+    .main-content {
+        width: 100%;
+        max-width: 100vw;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 0;
+    }
+    
+    .editor-layout,
+    .button-group,
+    .memory-overview,
+    .hex-editor {
+        width: 100%;
+        max-width: 100vw;
+        box-sizing: border-box;
+    }
+    
+    /* memory-overview和hex-editor在移动端优化 */
+    .memory-overview {
+        padding: 15px 10px;
+        margin: 10px 0;
+        border-radius: 0;
+    }
+    
+    .hex-editor {
+        padding: 15px 10px;
+        margin: 10px 0;
+        border-radius: 0;
+    }
+    
+    .hex-input {
+        font-size: 12px;
+        padding: 8px;
+    }
 }
 
 .sidebar {
@@ -713,14 +785,20 @@ button {
     box-shadow: 0 1px 2px rgba(0,0,0,0.1) !important;
 }
 
-/* 响应式设计：小屏幕时垂直排列 */
+/* 响应式设计：小屏幕时垂直排列并居中 */
 @media (pointer: coarse) {
     .button-group {
         flex-direction: column;
+        align-items: center;
+        width: 100%;
+        max-width: 100vw;
+        padding: 10px;
+        box-sizing: border-box;
     }
     
     .button-group button {
         max-width: 100%;
+        width: 100%;
     }
 }
 

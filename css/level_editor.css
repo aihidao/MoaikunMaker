@@ -311,6 +311,10 @@ h1 {
     /* 使用momentum-based scrolling提供惯性滑动 */
     -webkit-overflow-scrolling: touch;
     scroll-behavior: auto;
+    /* iOS优化：确保容器宽度正确 */
+    position: relative;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 #levelCanvas {
@@ -377,23 +381,53 @@ h1 {
 /* 移动端优化 */
 @media (pointer: coarse) {
     body {
-        padding: 10px;
+        padding: 0;
+        /* iOS优化：确保使用全部宽度 */
+        max-width: 100vw;
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
     }
 
     .editor-layout {
         display: flex;
-        gap: 20px;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
         justify-content: center;
+        /* 使用100%宽度，居中对齐 */
+        width: 100%;
+        max-width: 100vw;
+        padding: 0;
+        margin: 0;
     }
     
     .canvas-container {
-        /* padding: 15px 10px; */
+        padding: 10px 0;
         /* 添加滚动提示的渐变边缘效果 */
         position: relative;
         /* 确保可以滚动到最边缘 */
         overflow-x: auto;
         /* 强制显示滚动条，让用户知道可以滚动 */
         -webkit-overflow-scrolling: touch;
+        /* 使用100%屏幕宽度 */
+        width: 100vw;
+        max-width: 100vw;
+        box-sizing: border-box;
+        margin: 0;
+        /* 去除圆角和阴影，最大化显示区域 */
+        border-radius: 0;
+        box-shadow: none;
+    }
+    
+    /* info-panel在移动端居中显示 */
+    .info-panel {
+        width: 100%;
+        max-width: 100vw;
+        flex-direction: column;
+        gap: 10px;
+        margin: 10px 0;
+        padding: 10px;
+        box-sizing: border-box;
     }
     
     /* 确保canvas在移动端能正常滑动 */
@@ -668,4 +702,66 @@ h1 {
     body.test-mode .toolbar-toggle {
         display: none !important;
     }
+}
+
+/* iOS专用优化 - 解决显示不全问题 */
+@supports (-webkit-touch-callout: none) {
+    /* 只在iOS Safari上生效 */
+    body {
+        /* 强制使用100%宽度，不受max-width限制 */
+        max-width: 100vw !important;
+        width: 100vw !important;
+        padding: 0 !important;
+    }
+    
+    .top-bar {
+        width: 100vw !important;
+        max-width: 100vw !important;
+    }
+    
+    .canvas-container {
+        /* iOS特殊优化：使用100%宽度 */
+        width: 100vw !important;
+        max-width: 100vw !important;
+        padding: 10px 0 !important;
+    }
+    
+    .editor-layout {
+        /* iOS：确保布局使用全部宽度 */
+        width: 100vw !important;
+        max-width: 100vw !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box;
+    }
+}
+
+/* JavaScript添加的iOS设备类 */
+body.ios-device {
+    /* 强制100%宽度 */
+    max-width: 100vw !important;
+    width: 100vw !important;
+    padding: 0 !important;
+}
+
+body.ios-device .top-bar {
+    width: 100vw !important;
+    max-width: 100vw !important;
+}
+
+body.ios-device .canvas-container {
+    /* iOS：使用全屏宽度 */
+    width: 100vw !important;
+    max-width: 100vw !important;
+    padding: 10px 0 !important;
+}
+
+body.ios-device .editor-layout {
+    /* iOS：使用全部可视宽度 */
+    width: 100vw !important;
+    max-width: 100vw !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+    margin: 0 !important;
 }
