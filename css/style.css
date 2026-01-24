@@ -439,7 +439,6 @@ h1 {
 }
 
 .sidebar {
-    /* touch-action: none;  */
     position: fixed;
     left: -320px;
     top: 55px;
@@ -451,6 +450,11 @@ h1 {
     overflow-y: auto;
     transition: left 0.3s ease;
     z-index: 999;
+    /* 移动端滚动优化 */
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+    /* 允许纵向滑动 */
+    touch-action: pan-y;
 }
 
 .sidebar.open {

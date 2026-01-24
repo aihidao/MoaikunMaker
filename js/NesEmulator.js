@@ -365,18 +365,28 @@ class NesEmulator {
             this.scrollCanvasToCenter();
         }, 400); // 等待 CSS transition 完成（0.3s + 缓冲）
 
-        const canvasContainer = document.querySelector('.canvas-container');
-
-        if (canvasContainer) {
-            canvasContainer.classList.add('test-mode');
-            if(window.matchMedia('(pointer: coarse)').matches){
-            document.querySelector('#levelCanvas').scrollIntoView({
+        const levelCanvas = document.getElementById('levelCanvas');
+        if (levelCanvas) {
+            levelCanvas.classList.add('test-mode');
+            levelCanvas.scrollIntoView({
                 behavior: 'smooth',    // 平滑滚动（推荐）  也可写 'auto'（瞬间跳过去）
                 block: 'start',        // 垂直方向：顶部对齐
                 inline: 'nearest'      // 水平方向：就近（一般用不到特别指定）
             });
-            }
         }
+
+        // const canvasContainer = document.querySelector('.canvas-container');
+
+        // if (canvasContainer) {
+        //     canvasContainer.classList.add('test-mode');
+        //     if(window.matchMedia('(pointer: coarse)').matches){
+        //     document.querySelector('#levelCanvas').scrollIntoView({
+        //         behavior: 'smooth',    // 平滑滚动（推荐）  也可写 'auto'（瞬间跳过去）
+        //         block: 'start',        // 垂直方向：顶部对齐
+        //         inline: 'nearest'      // 水平方向：就近（一般用不到特别指定）
+        //     });
+        //     }
+        // }
 
         const editorLayout = document.querySelector('.editor-layout');
         if (editorLayout) {

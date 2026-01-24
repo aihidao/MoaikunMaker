@@ -143,8 +143,8 @@
                 </div>
             </div>
 
-            <div class="drag-tip" data-i18n="dragTip">💡 拖动关卡可调整顺序</div>
-            <div id="levelList" class="level-list"></div>
+            <!-- <div class="drag-tip" data-i18n="dragTip">💡 拖动关卡可调整顺序</div> -->
+            <div id="levelList" @touchmove.stop.prevent  class="level-list"></div>
         </div>
 
         <div class="main-content">

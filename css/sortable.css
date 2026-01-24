@@ -8,6 +8,11 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 8px;
+    /* 移动端滚动优化 */
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
+    /* 允许纵向滚动，但由drag-handle控制拖拽 */
+    touch-action: pan-y;
 }
 
 /* 关卡列表项基础样式 */
@@ -26,6 +31,8 @@
     /* 防止iOS自动调整文本大小 */
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
+    /* 允许滚动，不影响拖拽 */
+    touch-action: pan-y;
 }
 
 /* 关卡列表项基础样式 */
@@ -68,7 +75,7 @@
     user-select: none;
     transition: color 0.2s;
     flex-shrink: 0;
-    /* 移动端：防止触摸事件被浏览器拦截 */
+    /* 移动端：只在编辑模式下阻止触摸事件 */
     touch-action: none;
 }
 

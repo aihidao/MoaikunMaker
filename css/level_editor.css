@@ -75,7 +75,6 @@ h1 {
 
 /* 工具栏 */
 .toolbar {
-    /* touch-action: none; */
     position: fixed;
     left: -230px;
     top: 55px;
@@ -88,8 +87,11 @@ h1 {
     overflow-y: auto;
     transition: left 0.3s ease;
     z-index: 999;
-    /* display: block; */
     flex-direction: column;
+    /* 移动端滚动优化 */
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+    touch-action: pan-y;
 }
 
 .toolbar.open {
@@ -304,8 +306,11 @@ h1 {
     /* 支持横向滚动 */
     overflow-x: auto;
     overflow-y: hidden;
-    -webkit-overflow-scrolling: touch; /* iOS 平滑滚动 */
-    scroll-behavior: smooth; /* 平滑滚动效果 */
+    /* 移动端滚动优化 */
+    overscroll-behavior-x: contain;
+    /* 使用momentum-based scrolling提供惯性滑动 */
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: auto;
 }
 
 #levelCanvas {
@@ -377,24 +382,24 @@ h1 {
 
     .editor-layout {
         display: flex;
-        margin-left: -25%;
-        margin-right: -25%;
-
         gap: 20px;
         justify-content: center;
     }
     
     .canvas-container {
-        padding: 10px;
+        /* padding: 15px 10px; */
         /* 添加滚动提示的渐变边缘效果 */
         position: relative;
+        /* 确保可以滚动到最边缘 */
+        overflow-x: auto;
+        /* 强制显示滚动条，让用户知道可以滚动 */
+        -webkit-overflow-scrolling: touch;
     }
     
     /* 确保canvas在移动端能正常滑动 */
     #levelCanvas {
         transform-origin: top center;
         transition: transform 0.3s ease;
-        margin: 0;
     }
 
     .editor-layout.test-mode {
@@ -405,9 +410,11 @@ h1 {
     
     /* 竖屏模式下，测试时缩小canvas容器以显示完整游戏界面 */
     .canvas-container.test-mode {
+        
+    }
+
+    #levelCanvas.test-mode {
         transform: scale(0.75);
-        margin-left: -25%;
-        margin-right: -25%;
     }
     
     /* 在移动端显示滚动提示 */

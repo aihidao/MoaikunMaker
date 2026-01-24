@@ -551,6 +551,8 @@ class LevelEditor {
         const canvasContainer = this.canvas.parentElement;
         if (canvasContainer) {
             this.setupScrollEdgeDetection(canvasContainer);
+            // 初始化时将canvas滚动到中间位置，确保内容可见
+            this.centerCanvas(canvasContainer);
         }
         
         // 操作按钮
@@ -566,6 +568,11 @@ class LevelEditor {
                 this.isWideScreen = e.target.checked;
                 this.saveStatusEnabled();
                 this.render();
+                // 切换宽屏模式后重新居中canvas
+                const canvasContainer = this.canvas.parentElement;
+                if (canvasContainer) {
+                    setTimeout(() => this.centerCanvas(canvasContainer), 100);
+                }
                 console.log('宽场景模式:', this.isWideScreen);
             });
         }
@@ -613,6 +620,23 @@ class LevelEditor {
         
         // 窗口大小改变时更新
         window.addEventListener('resize', updateEdgeClasses);
+    }
+    
+    /**
+     * 将canvas滚动到中间位置（移动端初始化）
+     */
+    centerCanvas(container) {
+        // 使用requestAnimationFrame确保DOM已经渲染完成
+        requestAnimationFrame(() => {
+            const scrollWidth = container.scrollWidth;
+            const clientWidth = container.clientWidth;
+            
+            // 如果内容宽度大于容器宽度，则居中显示
+            if (scrollWidth > clientWidth) {
+                const centerPosition = (scrollWidth - clientWidth) / 2;
+                container.scrollLeft = centerPosition;
+            }
+        });
     }
     
     /**

@@ -384,6 +384,14 @@ class App {
             dragClass: 'sortable-drag',
             filter: '.no-drag',
             handle: '.drag-handle',
+            // 移动端优化
+            forceFallback: false,
+            fallbackTolerance: 5,
+            delay: 100,
+            delayOnTouchOnly: true,
+            touchStartThreshold: 5,
+            // 防止滚动冲突
+            preventOnFilter: false,
             onEnd: function(evt) {
                 // 如果位置没有变化，直接返回
                 if (evt.oldIndex === evt.newIndex) {
@@ -593,9 +601,14 @@ class App {
             this.toggleInfoItems(false); // 切换到编辑模式显示
             
             // 移除测试模式类，恢复正常大小
-            const canvasContainer = document.querySelector('.canvas-container');
-            if (canvasContainer) {
-                canvasContainer.classList.remove('test-mode');
+            // const canvasContainer = document.querySelector('.canvas-container');
+            // if (canvasContainer) {
+            //     canvasContainer.classList.remove('test-mode');
+            // }
+
+            const levelCanvas = document.getElementById('levelCanvas');
+            if (levelCanvas) {
+                levelCanvas.classList.remove('test-mode');
             }
 
             const editorLayout = document.querySelector('.editor-layout');
@@ -640,9 +653,14 @@ class App {
         }
         
         // 移除测试模式类，恢复正常大小
-        const canvasContainer = document.querySelector('.canvas-container');
-        if (canvasContainer) {
-            canvasContainer.classList.remove('test-mode');
+        // const canvasContainer = document.querySelector('.canvas-container');
+        // if (canvasContainer) {
+        //     canvasContainer.classList.remove('test-mode');
+        // }
+
+        const levelCanvas = document.getElementById('levelCanvas');
+        if (levelCanvas) {
+            levelCanvas.classList.remove('test-mode');
         }
 
         const editorLayout = document.querySelector('.editor-layout');
@@ -1410,10 +1428,12 @@ if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
     // 防止iOS边缘滑动返回
     let startX = 0;
     let startY = 0;
+    let targetElement = null;
     
     document.addEventListener('touchstart', (e) => {
         startX = e.touches[0].clientX;
         startY = e.touches[0].clientY;
+        targetElement = e.target;
     }, { passive: true });
     
     document.addEventListener('touchmove', (e) => {
@@ -1421,6 +1441,18 @@ if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
         const currentY = e.touches[0].clientY;
         const deltaX = currentX - startX;
         const deltaY = Math.abs(currentY - startY);
+        
+        // 检查是否在关卡列表或sidebar内
+        const isInLevelList = targetElement && (
+            targetElement.closest('.level-list') || 
+            targetElement.closest('.sidebar') ||
+            targetElement.closest('.level-item')
+        );
+        
+        // 如果在关卡列表内，不阻止任何滑动
+        if (isInLevelList) {
+            return;
+        }
         
         // 如果是从左边缘向右滑动（iOS返回手势），且垂直移动不多，则阻止
         if (startX < 30 && deltaX > 10 && deltaY < 50) {
