@@ -353,6 +353,20 @@ h1 {
     color: #333;
 }
 
+.info-label {
+    font-size: 10px;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.info-value {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    font-family: 'Courier New', monospace;
+    margin-bottom: 5px;
+}
+
 /* 滚动条样式 */
 .toolbar::-webkit-scrollbar {
     width: 6px;
@@ -423,12 +437,17 @@ h1 {
     .info-panel {
         width: 100%;
         max-width: 100vw;
-        flex-direction: column;
+        /* flex-direction: column; */
+        align-items: center; 
         gap: 10px;
         margin: 10px 0;
         padding: 10px;
         box-sizing: border-box;
     }
+
+    /* .info-item {
+        display: flex; 
+    } */
     
     /* 确保canvas在移动端能正常滑动 */
     #levelCanvas {
@@ -762,6 +781,5 @@ body.ios-device .editor-layout {
     max-width: 100vw !important;
     padding: 0 !important;
     margin: 0 !important;
-}
     margin: 0 !important;
 }

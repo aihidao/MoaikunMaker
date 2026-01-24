@@ -379,8 +379,9 @@ class App {
 
         if(levelCountInput.value > levels.length){
             //创建出多余的关卡
-            this.romEditor.setLevelCount(levelCountInput.value);
-            for(let i = levels.length; i < levelCountInput.value; i++){
+            const levelCountInputValue = parseInt(levelCountInput.value, 10);
+            this.romEditor.setLevelCount(levelCountInputValue);
+            for(let i = levels.length; i < levelCountInputValue; i++){
                 const newLevel = new Level(i);
                 levels.push(newLevel);
             }
