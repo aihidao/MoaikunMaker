@@ -213,7 +213,7 @@ class Config{
                 [{index: 0x6C, reverse: false}, {index: 0x6E, reverse: false}],
                 [{index: 0x6D, reverse: false}, {index: 0x6F, reverse: false}],
             ],
-            disabledLevelType:[0, 1],
+            disabledLevelType:[11],
             name: "Tile 1"
         },
         'tile_2':{
@@ -222,7 +222,7 @@ class Config{
                 [{index: 0x70, reverse: false}, {index: 0x72, reverse: false}],
                 [{index: 0x71, reverse: false}, {index: 0x73, reverse: false}],
             ],
-            disabledLevelType:[0, 1, 11],
+            disabledLevelType:[6, 11],
             name: "Tile 2"
         },
         'tile_3':{
@@ -231,7 +231,7 @@ class Config{
                 [{index: 0x74, reverse: false}, {index: 0x76, reverse: false}],
                 [{index: 0x75, reverse: false}, {index: 0x77, reverse: false}],
             ],
-            disabledLevelType:[0, 1, 4, 7, 8, 11],
+            disabledLevelType:[4, 6, 7, 8, 11],
             name: "Tile 3"
         },
         'tile_4':{

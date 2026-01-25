@@ -73,7 +73,7 @@ class ResourceManager{
         // 解析每个 tile
         for(let tileIndex = 0; tileIndex < flattenedTiles.length; tileIndex++){
             const tileInfo = flattenedTiles[tileIndex];
-            const tileAddr = baseAddr + ((tileInfo.index + metatileoffset * 4) * 0x10);
+            const tileAddr = baseAddr + ((tileInfo.index + metatileoffset * 2) * 0x10);
             
             // 创建 8x8 像素数组
             const tilePixels = [];
@@ -268,16 +268,18 @@ class ResourceManager{
                     if(index){
                         color = palette.slice(colorIndex[index] * 4, colorIndex[index] * 4 + 4);
                         if(index < 4){
-                            if(levelType === 0 || levelType === 1){
-                                metatileoffset = 2;
-                            }else if(levelType === 2){
+                            if(levelType === 0){
                                 metatileoffset = 4;
-                            }else if(levelType === 3){
-                                metatileoffset = 6;
-                            }else if(levelType === 4){
+                            }else if(levelType === 2){
                                 metatileoffset = 8;
+                            }else if(levelType === 3){
+                                metatileoffset = 12;
+                            }else if(levelType === 4){
+                                metatileoffset = 16;
+                            }else if(levelType === 6){
+                                metatileoffset = -9;
                             }else if(levelType === 11){
-                                metatileoffset = 2;
+                                metatileoffset = 4;
                             }
                         }
                     }else{
