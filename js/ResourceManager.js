@@ -267,6 +267,11 @@ class ResourceManager{
                     let index = parseInt(key.split("_")[1]);
                     if(index){
                         color = palette.slice(colorIndex[index] * 4, colorIndex[index] * 4 + 4);
+                        //TODO
+                        // scene 4 offset in game should be 14
+                        // scene 6 offset in game shoule be XX  I think it's a discarded design in original game
+                        //
+                        
                         if(index < 4){
                             if(levelType === 0){
                                 metatileoffset = 4;

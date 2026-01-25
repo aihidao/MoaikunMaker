@@ -351,6 +351,35 @@ class RomEditor {
             romData[offset7 + 1] = (cpuAddr >> 8) & 0xFF;
         }
 
+        //测试功能，将魔王图层数据写入其他场景，并备份其他场景的原本数据。方便恢复
+        //0x6A60 ~ 0x6E00
+        //0xEA70 ~ 0xEE10
+        let index = 0xEA70;
+        let indexEnd = 0xEE10;
+        const backupAddr = 0x8C50;
+
+        //如果0x8C50 全是0则代表没有备份过
+        let needBackup = true;
+        for(let i = backupAddr; i < backupAddr + (indexEnd - index); i++){
+            if(romData[i] !== 0x00){
+                needBackup = false;
+                break;
+            }
+        }
+
+        if(needBackup){
+            const page1Addr = 0xAA70;
+            const page2Addr = 0xCA70;
+            for(;index < indexEnd; index++){
+                let offset = index - 0xEA70;
+                //备份地址
+                romData[backupAddr + offset] = romData[page1Addr + offset];
+                //写入新数据
+                romData[page1Addr + offset] = romData[index];
+                romData[page2Addr + offset] = romData[index];
+            }
+        }
+
         //this.modified = false;
         document.getElementById('writeRomBtn').disabled = true;
         document.getElementById('downloadBtn').disabled = false;

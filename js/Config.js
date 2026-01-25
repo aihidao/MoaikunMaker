@@ -107,7 +107,7 @@ class Config{
                 [{index: 0xAE, reverse: false}, {index: 0xB0, reverse: false}, {index: 0xB6, reverse: false}, {index: 0xB8, reverse: false}],
                 [{index: 0xAF, reverse: false}, {index: 0xB1, reverse: false}, {index: 0xB7, reverse: false}, {index: 0xB9, reverse: false}],
             ],
-            disabledLevelType:[0, 1, 2, 3, 4, 5, 6, 9, 10, 11],
+            disabledLevelType:[],
             name: "Enemy 7"
         },
         'enemy_8':{
