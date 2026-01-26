@@ -458,7 +458,7 @@ class RomEditor {
      * 获取关卡总数
      */
     getLevelCount() {
-        return this.levelCount;
+        return this.levelCount - 1;
     }
     
     /**
@@ -470,7 +470,7 @@ class RomEditor {
             return { success: false, error: i18n.t('setLevelCountError') };
         }
         
-        this.levelCount = count;
+        this.levelCount = count + 1; // 实际存储值比显示值多1
         this.modified = true;
         
         // 立即写入ROM
