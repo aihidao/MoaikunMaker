@@ -260,7 +260,7 @@ class LevelEditor {
             imgName += `_${id}`;
         }
         btn.dataset.imgName = imgName;
-
+        btn.id = imgName;
         //const imgSrc = ResourceManager.getInstance().getResource(this.currentBgId, imgName);
         const imgSrc = '';
 
@@ -627,11 +627,11 @@ class LevelEditor {
         document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
         
         if (type === 'tile') {
-            const btn = document.querySelector(`[data-tile-id="${id}"]`);
+            const btn = document.getElementById(`tile_${id}`);
             if (btn) btn.classList.add('active');
             document.getElementById('currentTool').textContent = `Tile ${id}`;
         } else if (type === 'enemy') {
-            const btn = document.getElementById(`enemyBtn${id}`);
+            const btn = document.getElementById(`enemy_${id}`);
             if (btn) btn.classList.add('active');
             document.getElementById('currentTool').textContent = `Enemy ${id}`;
         } else if (type === 'player') {
@@ -640,6 +640,9 @@ class LevelEditor {
         } else if (type === 'door') {
             document.getElementById('doorBtn').classList.add('active');
             document.getElementById('currentTool').textContent = 'Door';
+        } else if (type === 'eraser') {
+            document.getElementById('eraserBtn').classList.add('active');
+            document.getElementById('currentTool').textContent = 'Eraser';
         }
         
         this.render();

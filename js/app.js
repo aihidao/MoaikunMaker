@@ -567,11 +567,6 @@ class App {
         // 显示/隐藏可视化编辑按钮
         //document.getElementById('visualEditBtn').style.display = 'inline-block';
     }
-
-    addLevel(){
-        //新增关卡
-        console.log("TODO : Add Level");
-    }
     
     /**
      * 将关卡数据加载到可视化编辑器
@@ -1084,64 +1079,6 @@ class App {
                 items[this.dropTargetIndex].classList.add('drop-placeholder');
             }
         }
-    }
-
-    /**
-     * 拖拽经过
-     */
-    handleDragOver(e) {
-        if (e.preventDefault) {
-            e.preventDefault();
-        }
-        e.dataTransfer.dropEffect = 'move';
-        e.currentTarget.classList.add('drag-over');
-        return false;
-    }
-
-    /**
-     * 放下
-     */
-    handleDrop(e, targetIndex) {
-        if (e.stopPropagation) {
-            e.stopPropagation();
-        }
-        e.preventDefault();
-
-        e.currentTarget.classList.remove('drag-over');
-
-        if (this.draggedIndex === targetIndex) {
-            return false;
-        }
-
-        // 重新排序关卡
-        const result = this.romEditor.reorderLevels(this.draggedIndex, targetIndex);
-        
-        if (result.success) {
-            // 标记被拖拽的关卡
-            this.romEditor.getLevel(targetIndex).markAsDragged();
-            
-            // 更新当前选中的关卡索引
-            if (this.currentLevel === this.draggedIndex) {
-                this.currentLevel = targetIndex;
-            } else if (this.draggedIndex < this.currentLevel && targetIndex >= this.currentLevel) {
-                this.currentLevel--;
-            } else if (this.draggedIndex > this.currentLevel && targetIndex <= this.currentLevel) {
-                this.currentLevel++;
-            }
-
-            if (this.currentLevel >= 0) {
-                this.selectLevel(this.currentLevel);
-            }
-            //this.updateMemoryOverview();
-            
-            //document.getElementById('downloadBtn').disabled = false;
-            //this.showMessage('success', `关卡已移动：${this.draggedIndex + 1} → ${targetIndex + 1}`);
-            this.showMessage('success', i18n.t("levelReorderSuccess", {draggedIndex: this.draggedIndex + 1, targetIndex: targetIndex + 1}));
-        } else {
-            this.showMessage('error',  i18n.t("levelReorderError"));
-        }
-
-        return false;
     }
 
     /**
