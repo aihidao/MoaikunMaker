@@ -26,6 +26,7 @@
             <div class="welcome-lang-switcher">
                 <button class="lang-btn" onclick="switchLanguage('zh-CN')" title="中文">中</button>
                 <button class="lang-btn" onclick="switchLanguage('en-US')" title="English">EN</button>
+                <button class="lang-btn" onclick="switchLanguage('ja-JP')" title="日本語">日</button>
             </div>
 
             <h1 data-i18n="welcomeTitle">🎮 欢迎使用 Moai-kun Maker</h1>
@@ -79,6 +80,9 @@
                 <button class="dropdown-item" onclick="switchLanguage('en-US'); toggleMobileMenu();">
                     <span>🇬🇧 English</span>
                 </button>
+                <button class="dropdown-item" onclick="switchLanguage('ja-JP'); toggleMobileMenu();">
+                    <span>🇯🇵 日本語</span>
+                </button>
             </div>
 
             <!-- 文件操作按钮 -->
@@ -92,8 +96,9 @@
 
             <!-- 语言切换按钮 -->
             <div class="language-switcher">
-                <button class="lang-btn" onclick="switchLanguage('zh-CN')" title="中文">中</button>
                 <button class="lang-btn" onclick="switchLanguage('en-US')" title="English">EN</button>
+                <button class="lang-btn" onclick="switchLanguage('zh-CN')" title="中文">中</button>
+                <button class="lang-btn" onclick="switchLanguage('ja-JP')" title="日本語">日</button>
             </div>
         </div>
     </div>
@@ -411,7 +416,15 @@
 
     <!-- 引入 SortableJS v1.15.0 -->
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    
+    <!-- 语言文件 -->
+    <script src="js/lang/zh-CN.js"></script>
+    <script src="js/lang/en-US.js"></script>
+    <script src="js/lang/ja-JP.js"></script>
+    
+    <!-- 国际化核心 -->
     <script src="js/i18n.js"></script>
+    
     <script src="js/lib/jsnes.min.js"></script>
     <script src="js/NesEmulator.js"></script>
     <script src="js/MobileGameController.js"></script>

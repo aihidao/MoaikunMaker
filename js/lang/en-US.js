@@ -1,0 +1,131 @@
+/**
+ * English (US) Translation
+ */
+const translations_enUS = {
+    // Top Bar
+    'title': 'Moai-kun Maker',
+    'selectRom': '📁 Select ROM File',
+    'clearCache': '🗑️ Clear Cache',
+    'clearCacheTitle': 'Clear Cached ROM',
+    
+    // Sidebar
+    'levelList': '📋 Level List',
+    'totalLevels': '🎮 Total Levels:',
+    'editLevels': '✏️ Edit Level Group',
+    'address': '(Address: 0x0BD3)',
+    'cancel': '❌ Cancel',
+    'saveLevelsEdit': '✔️ Save',
+    'dragTip': '💡 Drag levels to reorder',
+    
+    // Memory
+    'memoryUsage': '💾 Memory Usage',
+    
+    // Toolbar
+    'config': '🛠️',
+    'dragToMove': 'Drag to Move',
+    'operations': 'Operations',
+    'selectScene': 'Select Scene',
+    'scene': 'Scene',
+    'wideScene': '📺 Wide Screen',
+    'clearMap': 'Clear Map',
+    'exportData': 'Export Data',
+    'applyToRom': 'Apply to ROM Editor',
+    'tools': 'Tools',
+    'tiles': 'Tiles',
+    'enemies': 'Enemies',
+    'special': 'Special',
+    
+    // Canvas Info
+    'gridSize': 'Grid Size:',
+    'currentTool': 'Current Tool:',
+    'notSelected': 'Not Selected',
+    'mousePosition': 'Mouse Pos:',
+    
+    // Buttons
+    'testLevel': '🎮 Test Level',
+    'testRom': '🎮 Test ROM',
+    'stopEmulator': '⏹️ Stop Emulator',
+    'saveLevel': '💾 Save Level',
+    'writeToRom': '📝 Write ROM',
+    'downloadRom': '⬇️ Download ROM',
+    'shareLevel': '🔗 Share Level',
+    
+    // Info Panel
+    'mapRomAddress': 'Map ROM Address',
+    'mapCpuAddress': 'Map CPU Address',
+    'monsterRomAddress': 'Monster ROM Address',
+    'monsterCpuAddress': 'Monster CPU Address',
+    'currentSize': 'Current Size',
+    'bytes': 'Bytes',
+    
+    // Hex Editor
+    'mapDataLabel': '🗺️ Map Data (Excluding End FF)',
+    'readOnly': '[Read Only]',
+    'hexDataPlaceholder': 'Enter hex data, e.g.: A1 B2 C3 D4...',
+    'monsterDataLabel': '👾 Monster Data',
+    'monsterDataFormat': '(Format: 1st byte=monster count*2+1, followed by [type position] pairs)',
+    'monsterDataPlaceholder': 'Enter monster data, e.g.: 01 (no monsters) or 03 01 DD (one type 01 monster at DD)',
+    
+    // Welcome Screen
+    'welcomeTitle': '🎮 Welcome to Moai-kun Maker',
+    'welcomeTip1': 'You need to upload the ROM yourself. If you upload a correct ROM but it fails to load, please submit an Issue.',
+    'welcomeTip2': 'You can share levels with friends by simply sending them the link.',
+    'welcomeTip3': 'If you access via a shared link without ROM loaded, just upload the ROM and the shared level will start automatically.',
+    'welcomeTip4': 'This is an early version and may have some bugs. Feel free to submit Issues for feedback.',
+    'welcomeUpload': '📤 Upload ROM to Start',
+    
+    // Operation Info
+    'operationSummaryLabel': 'Controls:',
+    'operationSummary': 'Move (WASD)  |  Attack (J)  |  Jump (K)|  Start (Enter) | Select (Shift)',
+
+    // others
+    'levelCount' : 'Total Levels',
+    'levelLabel': 'Level {level}',
+    'selectNesRomFile': '📁 Select NES ROM File',
+
+    //messages
+    'levelDataExceedBoundaryError': 'Level data total size exceeds boundary! Level {level} ends at address {endAddr}, which exceeds the maximum address {maxAddr}. Cannot save!',
+    'loadedFromCacheMessage': 'Loaded from cache: {fileName}',
+    'romNotFoundWarning': 'Game ROM not found. The shared level will auto-run after you load a ROM file.',
+    'loadShareLevelError': 'Failed to load shared level',
+    'loadSharedLevelSuccess': '🎮 Shared level loaded successfully!',
+    'invalidLevelCountMessageError': 'Total number of levels must be between 1 and 255',
+    'levelCountUpdateSuccess': 'Total level count updated to {levelCount}',
+    'levelCountUpdateFailedError': 'Failed to update level count: {error}',
+    'cacheCleanSuccess': 'Cache cleared successfully',
+    'cacheCleanError': 'Failed to clear cache',
+    'loadFileSuccess': 'File loaded successfully: {fileNameStr}, {length} bytes)',
+    'emulatorNotRunningWarning': 'Emulator is not running',
+    'emulatorStopInfo': '✋ Emulator stopped',
+    'pleaseSelectLevelFirstWarning': 'Please select a level first',
+    'copyShareLevelLinkSuccess': '🔗 Share link copied to clipboard!',
+    'copyShareLevelLinkError': 'Failed to generate share link: {error}',
+    'testingCurrentLevelSuccess': '🎮 Testing current level...',
+    'romNotLoadedError': 'Please load a ROM file first',
+    'emulatorStartSuccess': '🎮 Emulator started!',
+    'editorNotInitError': 'Visual editor not initialized',
+    'saveMapFailedError': 'Failed to save map data!',
+    'monsterDataError': 'Monster data error {error}',
+    'saveMapSuccess': 'Level {currentLevel} saved successfully! Map and monster data updated.',
+    'saveLevelFailedError': 'Save failed: {error}',
+    'write2RomSuccess': 'All data written to ROM!',
+    'write2RomFiledError': 'Failed to write to ROM: {error}',
+    'cancelModifyWarning': 'Modification canceled',
+    'romDownloadSuccess': 'ROM file downloaded successfully!',
+    'levelReorderSuccess': 'Level moved: {draggedIndex} → {targetIndex}',
+    'levelReorderError': 'Failed to reorder level: {error}',
+    'changeLevelOrderInfo': '📝 Drag levels to reorder them',
+    'changeLevelOrderCancelWarning': '✖️ Modification canceled',
+    'changeLevelOrderSuccess': 'Level order saved (in memory only, click "Write to ROM" button to save to file)',
+    'forbiddenPleaceEnemyWarning': 'Enemy limit reached, cannot place more enemies',
+    'emptyEnemyDataError': 'Monster data cannot be empty',
+    'invalidHexValue': 'Invalid hex value: {hexValue}',
+    "setLevelCountError": 'Total levels must be between 1 and 255',
+    "invalidLevelIndexError": 'Invalid level index',
+    'clearRomCacheConfirm': 'Are you sure you want to clear the cached ROM?',
+    'forbiddenPleaceConsecutiveMoaiWarning': 'Due to system limitations, you cannot place more than 14 consecutive Moai NPCs, otherwise the compressed data indicates the end of the map.',
+    'prohibitedTileAreaWarning': 'The first row is a prohibited area for placing tiles',
+    'prohibitedPlayerAreaWarning': 'Due to system limitations, the player start point can only be placed in the left half area',
+    'prohibitedDoorAreaWarning': 'Due to system limitations, this position will prevent the player from completing the level.',
+    'consecutiveMoaiError': "Due to system limitations, it is not possible to prevent 14 consecutive Moai NPCs, otherwise the compressed data indicates the end of the map.",
+};

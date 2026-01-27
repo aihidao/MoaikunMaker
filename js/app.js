@@ -1026,10 +1026,10 @@ class App {
         setTimeout(() => {
             message.classList.add('hiding');
             setTimeout(() => {
+                this.messageSet.delete(text);
                 message.remove();
                 // 如果容器为空，移除容器
                 if (container.children.length === 0) {
-                    this.messageSet.delete(text);
                     container.remove();
                 }
             }, 300); // 等待退出动画完成
