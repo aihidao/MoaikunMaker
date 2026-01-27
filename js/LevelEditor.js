@@ -759,17 +759,46 @@ class LevelEditor {
     }
 
     //禁止放置区域
-    isProhibitedArea(x, y) {
-        // 第一行禁止放置
-         if (y === 0 && this.currentTool.includes('tile')
-            // 玩家不能放置在第二屏幕
-            || (this.currentTool === 'player' && (x >= Config.GRID_WIDTH / 2))
-            // 如果非宽屏模式，门不能放在左屏幕的最后一格
-            || (this.isWideScreen === false && this.currentTool === 'door' && (x === (Config.GRID_WIDTH / 2 -1)))
-            ){
-                return true;
-            }
-        return false;
+    isProhibitedArea(x, y, isDragging = true) {
+        // // 第一行禁止放置
+        //  if (y === 0 && this.currentTool.includes('tile')
+        //     // 玩家不能放置在第二屏幕
+        //     || (this.currentTool === 'player' && (x >= Config.GRID_WIDTH / 2))
+        //     // 如果非宽屏模式，门不能放在左屏幕的最后一格
+        //     || (this.isWideScreen === false && this.currentTool === 'door' && (x === (Config.GRID_WIDTH / 2 -1)))
+        //     // 禁止连续 15 个 摩艾石像
+        //     || (this.currentTileId === 0xF && !this.checkConsecutiveMoaiPlaccedAllow(x, y))  
+        // )
+        // {
+        //     return true;
+        // }
+
+        let isProhibitedArea = false;
+        let warningMessage = '';
+        if(y === 0 && this.currentTool.includes('tile')){
+            warningMessage = i18n.t('prohibitedTileAreaWarning');
+            isProhibitedArea = true;
+        }
+
+        if(this.currentTool === 'player' && (x >= Config.GRID_WIDTH / 2)){
+            warningMessage = i18n.t('prohibitedPlayerAreaWarning');
+            isProhibitedArea = true;
+        }
+
+        if(this.isWideScreen === false && this.currentTool === 'door' && (x === (Config.GRID_WIDTH / 2 -1))){
+            warningMessage = i18n.t('prohibitedDoorAreaWarning');
+            isProhibitedArea = true;
+        }
+
+        if(this.currentTileId === 0xF && !this.checkConsecutiveMoaiPlaccedAllow(x, y)){
+            warningMessage = i18n.t('forbiddenPleaceConsecutiveMoaiWarning');
+            isProhibitedArea = true;
+        }
+
+        if(isProhibitedArea && !isDragging ){
+            app.showMessage('warning', warningMessage);
+        }
+        return isProhibitedArea;
     }
     
     
@@ -780,12 +809,16 @@ class LevelEditor {
         //if (!this.currentTool) return;
         
         // 第一行（y=0）禁止放置贴图 玩家不能放置在第二屏幕
-        if (this.isProhibitedArea(x, y)) {
+        if (this.isProhibitedArea(x, y, isDragging)) {
             return;
         }
         
         if (this.currentTool === 'tile' && this.currentTileId) {
             // 放置tile
+            if(this.currentTileId === 0xF && !this.checkConsecutiveMoaiPlaccedAllow(x, y)){
+                //app.showMessage('warning', i18n.t("forbiddenPleaceConsecutiveMoaiWarning"));
+                return;
+            }
             this.mapData[y][x] = this.currentTileId;
         } else if (this.currentTool === 'enemy' && this.currentEnemyId) {
             if(this.enemies.length >= Config.MAX_ENEMIES){
@@ -1194,35 +1227,99 @@ class LevelEditor {
          document.getElementById('hexData').value = showMapDataStr;
          document.getElementById('monsterData').value = showMonsterDataStr;
     }
+
+    checkConsecutiveMoaiPlaccedAllow(x, y){
+        let rows = Config.GRID_HEIGHT;
+        let cols = this.isWideScreen ? Config.GRID_WIDTH : Config.GRID_WIDTH / 2;
+
+        let consecutiveCountLeft = 0;
+        //左边
+        let flag = true;
+        let notMoai = false;
+        for (let i = y; i >= 0 ; i--) {
+            let colsNum = cols - 1;
+            if(flag){
+                colsNum = x;
+            }
+            for (let j = colsNum; j >= 0 ; j--) {
+                if(flag){
+                    flag = false;
+                    continue;
+                }
+                const tileId = this.mapData[i][j];
+                if(tileId === 0xF) {
+                    if (consecutiveCountLeft >= 0xF) {
+                        return false;
+                    }
+                    consecutiveCountLeft++;
+                }else{
+                    notMoai = true;
+                    break;
+                }
+            }
+            if(notMoai){
+                break;
+            }
+        }
+
+        //右边
+        let consecutiveCountRight = 0;
+        //第一个为当前元素 不算
+        flag = true;
+        notMoai = false;
+        for (let i = y; i < rows ; i++) {
+            let colsNum = 0;
+            if(flag){
+                colsNum = x;
+            }
+            for (let j = colsNum; j < cols ; j++) {
+                if(flag){
+                    flag = false;
+                    continue;
+                }
+                const tileId = this.mapData[i][j];
+                if(tileId === 0xF) {
+                    if (consecutiveCountLeft + consecutiveCountRight >= 0xF) {
+                        return false;
+                    }
+                    consecutiveCountRight++;
+                }else{
+                    notMoai = true;
+                    break;
+                }
+            }
+            if(notMoai){
+                break;
+            }
+        }
+
+        if(consecutiveCountLeft + consecutiveCountRight + 1 >= 0xF){
+            return false;
+        }
+
+        return true;
+    }
     
     /**
-     * 解析敌人数据用于显示
      */
-    // decodeEnemyDataForDisplay(enemyBytes) {
-    //     if (enemyBytes.length === 0) {
-    //         return '无敌人数据';
-    //     }
-        
-    //     const lines = [];
-    //     const firstByte = enemyBytes[0];
-    //     const enemyCount = (firstByte - 1) / 2;
-        
-    //     lines.push(`${enemyBytes[0].toString(16).toUpperCase().padStart(2, '0')}: 敌人数量标识 (${enemyCount}个敌人)`);
-        
-    //     for (let i = 1; i < enemyBytes.length; i += 2) {
-    //         if (i + 1 < enemyBytes.length) {
-    //             const enemyId = enemyBytes[i];
-    //             const position = enemyBytes[i + 1];
-    //             const x = Math.floor(position / 16);
-    //             const y = position % 16;
-                
-    //             const hexId = enemyId.toString(16).toUpperCase().padStart(2, '0');
-    //             const hexPos = position.toString(16).toUpperCase().padStart(2, '0');
-                
-    //             lines.push(`${hexId} ${hexPos}: 敌人${enemyId} 位于 (${x}, ${y})`);
-    //         }
-    //     }
-        
-    //     return lines.join('<br>');
-    // }
+    checkConsecutiveMoai() {
+        let rows = Config.GRID_HEIGHT;
+        let cols = this.isWideScreen ? Config.GRID_WIDTH : Config.GRID_WIDTH / 2;
+        let consecutiveCount = 0;
+        for (let y = 0; y < rows; y++) {
+            for (let x = 0; x < cols; x++) {
+                const tileId = this.mapData[y][x];
+                if(tileId === 0xF) {
+                    if (consecutiveCount >= 0xF) {
+                        return false;
+                    }
+                    consecutiveCount++;
+                }else{
+                    consecutiveCount = 0;
+                }
+
+            }
+        }
+        return true;
+    }
 }

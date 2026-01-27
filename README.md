@@ -6,9 +6,9 @@
 ## 🔍 快速预览
 
 ### 界面: 
-![界面](https://aihidao.github.io/Pages/MoaikunMaker/docs/info.png)
+![界面](https://dasuxd.github.io/Pages/MoaikunMaker/docs/info.png)
 ### 游戏：
-![游玩](https://aihidao.github.io/Pages/MoaikunMaker/docs/play.gif)
+![游玩](https://dasuxd.github.io/Pages/MoaikunMaker/docs/play.gif)
 
 ## ✨ 功能特性
 
@@ -23,13 +23,13 @@
 
 ### 在线使用
 
-直接访问：[在线演示地址](https://aihidao.github.io/MoaikunMaker/)
+直接访问：[在线演示地址](https://dasuxd.github.io/MoaikunMaker/)
 
 ### 本地运行
 
 ```bash
 # 克隆仓库
-git clone https://github.com/aihidao/MoaikunMaker.git
+git clone https://github.com/dasuxd/MoaikunMaker.git
 
 # 进入目录
 cd moaikun-maker
@@ -154,7 +154,7 @@ moaikun-maker/
 
 如有问题或建议，请通过以下方式联系：
 
-- GitHub Issues: [提交 Issue](https://github.com/aihidao/MoaikunMaker/issues)
+- GitHub Issues: [提交 Issue](https://github.com/dasuxd/MoaikunMaker/issues)
 - Email: aihidao@126.com
 
 ---

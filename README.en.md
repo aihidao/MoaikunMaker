@@ -6,9 +6,9 @@ A web-based level editor for the NES game "モアイくん (Moai-kun)".
 ## 🔍 Quick Preview
 
 ### Interface: 
-![Interface](https://aihidao.github.io/Pages/MoaikunMaker/docs/info.png)  
+![Interface](https://dasuxd.github.io/Pages/MoaikunMaker/docs/info.png)  
 ### Gameplay: 
-![Play](https://aihidao.github.io/Pages/MoaikunMaker/docs/play.gif)
+![Play](https://dasuxd.github.io/Pages/MoaikunMaker/docs/play.gif)
 
 ## ✨ Features
 
@@ -23,13 +23,13 @@ A web-based level editor for the NES game "モアイくん (Moai-kun)".
 
 ### Online Usage
 
-Visit: [Demo Link](https://aihidao.github.io/MoaikunMaker/)
+Visit: [Demo Link](https://dasuxd.github.io/MoaikunMaker/)
 
 ### Local Setup
 
 ```bash
 # Clone the repository
-git clone https://github.com/aihidao/MoaikunMaker.git
+git clone https://github.com/dasuxd/MoaikunMaker.git
 
 # Navigate to directory
 cd moaikun-maker
@@ -154,7 +154,7 @@ This project is licensed under the [MIT License](LICENSE).
 
 For questions or suggestions, please contact via:
 
-- GitHub Issues: [Submit Issue](https://github.com/aihidao/MoaikunMaker/issues)
+- GitHub Issues: [Submit Issue](https://github.com/dasuxd/MoaikunMaker/issues)
 - Email: aihidao@126.com
 ---
 
