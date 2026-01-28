@@ -193,8 +193,8 @@ class App {
         document.getElementById('fileInput').addEventListener('change', 
             (e) => this.handleFileSelect(e));
 
-        // 初始化移动控制器
-
+        // 初始化工具栏拖拽功能
+        this.initToolbarDragging();
         
         // 关卡列表抽屉切换
         const sidebarToggle = document.getElementById('sidebarToggle');
@@ -300,6 +300,94 @@ class App {
     }
     
     /**
+     * 初始化工具栏拖拽功能
+     */
+    initToolbarDragging() {
+        const toolbar = document.getElementById('toolbar');
+        if (!toolbar) return;
+        
+        let isDragging = false;
+        let startMouseX, startMouseY;
+        let startLeft, startTop;
+        
+        // 鼠标事件
+        toolbar.addEventListener('mousedown', dragStart);
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('mouseup', dragEnd);
+        
+        // 触摸事件
+        toolbar.addEventListener('touchstart', dragStart, { passive: true });
+        document.addEventListener('touchmove', drag, { passive: false });
+        document.addEventListener('touchend', dragEnd);
+        
+        function dragStart(e) {
+            // 只在拖拽模式下才启用拖拽
+            if (!toolbar.classList.contains('draggable-mode')) {
+                return;
+            }
+            
+            // 如果点击的是按钮或可交互元素，不启动拖拽
+            if (e.target.closest('button') || e.target.closest('input') || e.target.closest('select')) {
+                return;
+            }
+            
+            // 获取当前工具栏位置
+            const rect = toolbar.getBoundingClientRect();
+            startLeft = rect.left;
+            startTop = rect.top;
+            
+            if (e.type === 'touchstart') {
+                startMouseX = e.touches[0].clientX;
+                startMouseY = e.touches[0].clientY;
+            } else {
+                startMouseX = e.clientX;
+                startMouseY = e.clientY;
+            }
+            
+            isDragging = true;
+            toolbar.style.cursor = 'grabbing';
+            // transition 由 CSS 的 .draggable-mode 类控制，不在这里设置
+        }
+        
+        function drag(e) {
+            if (!isDragging) return;
+            
+            e.preventDefault();
+            
+            let currentMouseX, currentMouseY;
+            if (e.type === 'touchmove') {
+                currentMouseX = e.touches[0].clientX;
+                currentMouseY = e.touches[0].clientY;
+            } else {
+                currentMouseX = e.clientX;
+                currentMouseY = e.clientY;
+            }
+            
+            // 计算新位置
+            let newLeft = startLeft + (currentMouseX - startMouseX);
+            let newTop = startTop + (currentMouseY - startMouseY);
+            
+            // 限制拖拽范围，防止工具栏被拖出屏幕
+            const minX = 10;
+            const minY = 10;
+            const maxX = window.innerWidth - toolbar.offsetWidth - 10;
+            const maxY = window.innerHeight - toolbar.offsetHeight - 10;
+            
+            newLeft = Math.max(minX, Math.min(maxX, newLeft));
+            newTop = Math.max(minY, Math.min(maxY, newTop));
+            
+            toolbar.style.left = newLeft + 'px';
+            toolbar.style.top = newTop + 'px';
+        }
+        
+        function dragEnd() {
+            if (!isDragging) return;
+            isDragging = false;
+            toolbar.style.cursor = '';
+        }
+    }
+    
+    /**
      * 加载 ROM 数据（统一处理文件上传和缓存加载）
      * @param {ArrayBuffer} data - ROM 数据
      * @param {string} fileName - 文件名
@@ -371,7 +459,15 @@ class App {
         // 显示侧边栏切换按钮和主布局
         document.getElementById('mainLayout').style.display = 'flex';
         document.getElementById('sidebarToggle').style.display = 'flex';
-        document.getElementById('toolbarToggle').style.display = 'flex';
+        
+        // 工具栏抽屉按钮：只在非拖拽模式下显示
+        const toolbarToggleBtn = document.getElementById('toolbarToggle');
+        const toolbarEl = document.getElementById('toolbar');
+        if (toolbarToggleBtn && toolbarEl) {
+            if (!toolbarEl.classList.contains('draggable-mode')) {
+                toolbarToggleBtn.style.display = 'flex';
+            }
+        }
         
         // 禁用关卡总数输入框（仅在编辑模式下启用）
         const levelCountInput = document.getElementById('levelCountInput');
@@ -1403,6 +1499,57 @@ function switchLanguage(lang) {
     }
 }
 
+/**
+ * 切换工具栏模式（拖拽/抽屉）
+ */
+function toggleToolbarMode() {
+    const toolbar = document.getElementById('toolbar');
+    const toggleBtn = document.getElementById('toolbarModeToggle');
+    const toolbarToggle = document.getElementById('toolbarToggle');
+    
+    if (!toolbar || !toggleBtn) return;
+    
+    const isDraggableMode = toolbar.classList.contains('draggable-mode');
+    
+    if (isDraggableMode) {
+        // 从拖拽模式 → 抽屉模式
+        toolbar.classList.remove('draggable-mode');
+        toolbar.classList.remove('open');
+        
+        // 清除拖拽产生的内联样式，让 CSS 接管
+        toolbar.style.left = '';
+        toolbar.style.top = '';
+        toolbar.style.cursor = '';
+        
+        // 更新切换按钮
+        toggleBtn.textContent = '🔓';
+        toggleBtn.title = '切换到拖拽模式';
+        
+        // 显示抽屉按钮，并重置其状态
+        if (toolbarToggle) {
+            toolbarToggle.style.display = 'flex';
+            toolbarToggle.classList.remove('toolbar-open');
+        }
+    } else {
+        // 从抽屉模式 → 拖拽模式
+        toolbar.classList.add('draggable-mode');
+        toolbar.classList.add('open');
+        
+        // 设置初始位置（右上角）
+        toolbar.style.left = (window.innerWidth - toolbar.offsetWidth - 20) + 'px';
+        toolbar.style.top = '100px';
+        
+        // 更新切换按钮
+        toggleBtn.textContent = '📌';
+        toggleBtn.title = '切换到抽屉模式';
+        
+        // 隐藏抽屉按钮
+        if (toolbarToggle) {
+            toolbarToggle.style.display = 'none';
+        }
+    }
+}
+
 // 页面加载时初始化语言系统
 document.addEventListener('DOMContentLoaded', () => {
     // 初始化 i18n
@@ -1413,7 +1560,60 @@ document.addEventListener('DOMContentLoaded', () => {
     if (activeBtn) {
         activeBtn.classList.add('active');
     }
+    
+    // PC端默认设置为拖拽模式
+    initToolbarModeForPC();
 });
+
+/**
+ * PC端初始化工具栏为拖拽模式
+ */
+function initToolbarModeForPC() {
+    const toolbar = document.getElementById('toolbar');
+    const toggleBtn = document.getElementById('toolbarModeToggle');
+    const toolbarToggle = document.getElementById('toolbarToggle');
+    
+    if (!toolbar) return;
+    
+    // 手机模式：确保是抽屉模式，清除所有可能的残留状态
+    if (window.innerWidth <= 768) {
+        toolbar.classList.remove('draggable-mode');
+        toolbar.classList.remove('open');
+        toolbar.style.left = '';
+        toolbar.style.top = '';
+        toolbar.style.cursor = '';
+        
+        if (toggleBtn) {
+            toggleBtn.textContent = '🔓';
+            toggleBtn.title = '切换到拖拽模式';
+        }
+        
+        if (toolbarToggle) {
+            toolbarToggle.classList.remove('toolbar-open');
+        }
+        return;
+    }
+    
+    // PC模式：设置为拖拽模式
+    toolbar.classList.add('draggable-mode');
+    toolbar.classList.add('open');
+    
+    // 设置初始位置，延迟执行确保工具栏已渲染
+    setTimeout(() => {
+        toolbar.style.left = (window.innerWidth - toolbar.offsetWidth - 20) + 'px';
+        toolbar.style.top = '100px';
+    }, 0);
+    
+    if (toggleBtn) {
+        toggleBtn.textContent = '📌';
+        toggleBtn.title = '切换到抽屉模式';
+    }
+    
+    // 隐藏抽屉按钮
+    if (toolbarToggle) {
+        toolbarToggle.style.display = 'none';
+    }
+}
 
 /**
  * 切换移动端菜单

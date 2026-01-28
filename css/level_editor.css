@@ -82,6 +82,24 @@ h1 {
     left: 0;
 }
 
+/* 工具栏拖拽模式 */
+.toolbar.draggable-mode {
+    position: fixed;
+    transition: none;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    height: auto;
+    max-height: calc(100vh - 120px);
+    cursor: grab;
+}
+
+.toolbar.draggable-mode .toolbar-header {
+    cursor: move;
+}
+
+.toolbar.draggable-mode .toolbar-header:active {
+    cursor: grabbing;
+}
+
 
 
 .toolbar-header {
@@ -104,6 +122,30 @@ h1 {
 .toolbar-title {
     font-size: 14px;
     font-weight: 600;
+}
+
+/* 工具栏模式切换按钮 */
+.toolbar-mode-toggle {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.3s;
+    display: none; /* 默认隐藏，PC端通过JS显示 */
+}
+
+.toolbar-mode-toggle:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* PC端显示切换按钮 */
+@media (min-width: 769px) {
+    .toolbar-mode-toggle {
+        display: block;
+    }
 }
 
 .toolbar-content {
