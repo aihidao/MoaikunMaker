@@ -163,12 +163,12 @@ class OptimizedMap{
                     const topTile = (y > 0) ? mapData[y - 1][x] : 0;
                     const bottomTile = (y < Config.GRID_HEIGHT - 1) ? mapData[y + 1][x] : 0;
                     if([1, 2, 3].includes(topTile)){
-                        optimizedMap[y][x] = 1;
+                        tile = 1;
                     }else{
-                        optimizedMap[y][x] = 2;
+                        tile = 2;
                     }
                 }
-
+                optimizedMap[y][x] = tile;
             }
         }
     }
@@ -188,17 +188,16 @@ class OptimizedMap{
                     const leftTile = (x > 0) ? mapData[y][x - 1] : 0;
                     const rightTile = (x < Config.GRID_WIDTH - 1) ? mapData[y][x + 1] : 0;
                     if(![1, 2, 3].includes(leftTile) && ![1, 2, 3].includes(rightTile)){
-                        optimizedMap[y][x] = 4;
+                        tile = 4;
                     }else if([1, 2, 3].includes(leftTile) && ![1, 2, 3].includes(rightTile)){
-                        optimizedMap[y][x] =3;
+                        tile =3;
                     }else if(![1, 2, 3].includes(leftTile) && [1, 2, 3].includes(rightTile)){
-                        optimizedMap[y][x] =1;
+                        tile =1;
                     }else{
-                        optimizedMap[y][x] =2;
+                        tile =2;
                     }
-                }else{
-                    optimizedMap[y][x] = tile;
-                }
+                }  
+                optimizedMap[y][x] = tile;
             }
         }
     }
@@ -248,9 +247,9 @@ class OptimizedMap{
             for(let x=0; x<Config.GRID_WIDTH; x++){
                 let tile = mapData[y][x];
                 if([1, 2, 3].includes(tile)){
-                    optimizedMap[y][x] = 4;
+                    tile = 4;
                 }
-
+                optimizedMap[y][x] = tile;
             }
         }
     }
