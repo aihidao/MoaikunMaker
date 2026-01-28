@@ -1,12 +1,20 @@
 # 🗿 Moai-kun Maker
 
-English | [中文](README.md)
+English | [中文](README.md) | [日本語](README.ja.md) 
 
 A web-based level editor for the NES game "モアイくん (Moai-kun)".
 ## 🔍 Quick Preview
 
 ### Interface: 
-![Interface](https://dasuxd.github.io/Pages/MoaikunMaker/docs/info.png)  
+![Interface](https://dasuxd.github.io/Pages/MoaikunMaker/docs/info.png)
+
+#### Mobile Portrait
+![Mobile Demo 1](https://dasuxd.github.io/Pages/MoaikunMaker/docs/phone1.gif)
+
+#### Mobile Landscape
+![Mobile Demo 2](https://dasuxd.github.io/Pages/MoaikunMaker/docs/phone2.gif)
+
+
 ### Gameplay: 
 ![Play](https://dasuxd.github.io/Pages/MoaikunMaker/docs/play.gif)
 
@@ -16,7 +24,7 @@ A web-based level editor for the NES game "モアイくん (Moai-kun)".
 - 🎮 **Instant Testing** - Built-in NES emulator for real-time level testing
 - 🔗 **Level Sharing** - Generate shareable links with one click
 - 💾 **ROM Editing** - Directly modify and export ROM files
-- 🌐 **Multi-language** - Switch between Chinese/English interface
+- 🌐 **Multi-language** - Seamless switching between Chinese/English/Japanese
 - 📋 **Level Management** - Drag-and-drop sorting, batch editing
 
 ## 🚀 Quick Start
@@ -95,20 +103,28 @@ moaikun-maker/
 ├── index.html              # Main page
 ├── css/
 │   ├── style.css          # Main styles
-│   └── level_editor.css   # Editor styles
+│   ├── level_editor.css   # Editor styles
+│   └── sortable.css       # Sortable component styles
 ├── js/
 │   ├── app.js             # Main application logic
 │   ├── Config.js          # Configuration
 │   ├── DataConverter.js   # Data conversion
 │   ├── Enemy.js           # Enemy configuration
+│   ├── i18n.js            # Internationalization main file
 │   ├── Level.js           # Level data structure
 │   ├── LevelEditor.js     # Level editor
+│   ├── MobileGameController.js # Mobile game controller
 │   ├── NesEmulator.js     # Emulator wrapper
 │   ├── ResourceManager.js # Resource management
 │   ├── RomCache.js        # ROM caching
 │   ├── RomEditor.js       # ROM editing
-│   └── i18n.js            # Internationalization
-└── res/                    # Resources (empty)
+│   ├── lang/              # Language files directory
+│   │   ├── zh-CN.js       # Simplified Chinese
+│   │   ├── en-US.js       # English
+│   │   └── ja-JP.js       # Japanese
+│   └── lib/               # Third-party libraries
+│       └── jsnes.min.js   # NES emulator core
+└── README.md              # Project documentation
 ```
 
 ## ⚖️ Legal Notice
@@ -135,10 +151,7 @@ Issues and Pull Requests are welcome!
 
 ## 📝 Roadmap
 
-- [ ] Undo/Redo functionality
-- [ ] More level templates
-- [ ] Level validation (completability check)
-- [ ] Export level screenshots
+- [ ] Background processing of level data (if worth implementing in the future)
 
 ## 📄 License
 
@@ -147,6 +160,7 @@ This project is licensed under the [MIT License](LICENSE).
 ## 🙏 Acknowledgments
 
 - [JSNES](https://github.com/bfirsh/jsnes) - NES emulator core
+- [Sortable](https://github.com/SortableJS/Sortable) - Sortable framework
 - Konami - Original game developer
 - All contributors and testers
 
