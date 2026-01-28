@@ -213,7 +213,7 @@ class Config{
                 [{index: 0x6C, reverse: false}, {index: 0x6E, reverse: false}],
                 [{index: 0x6D, reverse: false}, {index: 0x6F, reverse: false}],
             ],
-            disabledLevelType:[11],
+            disabledLevelType:[6, 11],
             name: "Tile 1"
         },
         'tile_2':{

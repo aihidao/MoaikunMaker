@@ -979,7 +979,10 @@ class LevelEditor {
         // 4. 绘制地图tile
         for (let y = 0; y < Config.GRID_HEIGHT; y++) {
             for (let x = 0; x < Config.GRID_WIDTH; x++) {
-                const tileId = this.optimizedMapData[y][x];
+                let tileId = this.optimizedMapData[y][x];
+                if(Config.DEBUG_MODE){
+                    tileId = this.mapData[y][x];
+                }
                 const tileName = Config.TILE_PREFIX + `${tileId}`;
                 if (tileId > 0 && this.images.get(tileName)) {
                     this.ctx.drawImage(
