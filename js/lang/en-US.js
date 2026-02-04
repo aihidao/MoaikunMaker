@@ -128,4 +128,5 @@ const translations_enUS = {
     'prohibitedPlayerAreaWarning': 'Due to system limitations, the player start point can only be placed in the left half area',
     'prohibitedDoorAreaWarning': 'Due to system limitations, this position will prevent the player from completing the level.',
     'consecutiveMoaiError': "Due to system limitations, it is not possible to prevent 14 consecutive Moai NPCs, otherwise the compressed data indicates the end of the map.",
+    'buggyEnemy9PlaceInfo': "Placing the fire-breathing statue in the second screen may cause bugs in the game. It is recommended to place it only in the first screen.",
 };

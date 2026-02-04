@@ -128,4 +128,5 @@ const translations_zhCN = {
     'prohibitedPlayerAreaWarning': '由于系统限制，玩家起始点只能放在左半边区域',
     'prohibitedDoorAreaWarning': '由于系统限制，该位置将导致玩家无法通关。',
     'consecutiveMoaiError': "由于系统限制，无法防止连续14个摩艾 NPC，否则压缩后的数据意味着地图结束符号。",
+    'buggyEnemy9PlaceInfo': "放置在第二屏的喷火像会在游戏中有bug，建议只放在第一屏。",
 };

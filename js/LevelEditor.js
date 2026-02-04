@@ -818,9 +818,10 @@ class LevelEditor {
             }
             // Place enemy (check if already exists)
             const existingIndex = this.enemies.findIndex(e => e.x === x && e.y === y);
+            const realId = Enemy.getRealId(this.currentEnemyId);
             if (existingIndex >= 0) {
                 // If not self, replace existing enemy; if self, reverse facing
-                const realId = Enemy.getRealId(this.currentEnemyId);
+
                 if(this.enemies[existingIndex].getRealId() === realId &&  !isDragging){
                     this.enemies[existingIndex].reverseFacing();
                     //
@@ -830,10 +831,14 @@ class LevelEditor {
                     let screenEnemyId = x > Config.GRID_WIDTH / 2 ? (this.currentEnemyId | 0x80) : (this.currentEnemyId & 0x7F);
                     this.enemies[existingIndex] = new Enemy(screenEnemyId, x, y);
                 }
-                
             } else {
                 // Add new enemy
                 this.enemies.push(new Enemy(this.currentEnemyId, x, y));
+            }
+
+            //bug info
+            if(x > Config.GRID_WIDTH / 2 && realId  === 9){
+                app.showMessage('info', i18n.t("buggyEnemy9PlaceInfo"));
             }
         } else if (this.currentTool === 'player') {
             // Place player
