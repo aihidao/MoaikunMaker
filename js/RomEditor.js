@@ -540,4 +540,60 @@ class RomEditor {
         
         return { success: true };
     }
+    
+    /**
+     * Export all level data as serializable object (for caching)
+     * @returns {Object} Serialized level data
+     */
+    exportLevelsData() {
+        const levelsData = this.levels.map(level => ({
+            index: level.index,
+            originalIndex: level.originalIndex,
+            data: [...level.data],
+            monsterData: [...level.monsterData],
+            isDeleted: level.isDeleted,
+            modified: level.modified
+        }));
+        return levelsData;
+    }
+    
+    /**
+     * Import level data from cache and apply to current ROM
+     * @param {Array} levelsData - Serialized level data array
+     * @param {number} levelCount - Level count
+     */
+    importLevelsData(levelsData, levelCount) {
+        if (!levelsData || !Array.isArray(levelsData) || levelsData.length === 0) {
+            return false;
+        }
+        
+        // Update level count
+        this.levelCount = levelCount;
+        this.romData[Config.LEVEL_COUNT_ADDRESS] = this.levelCount + 1;
+        
+        // Rebuild levels array
+        this.levels = [];
+        for (let i = 0; i < levelsData.length; i++) {
+            const ld = levelsData[i];
+            const level = new Level(
+                ld.index,
+                0, // cpuAddress will be recalculated
+                0, // romAddress will be recalculated
+                [...ld.data],
+                [...ld.monsterData],
+                0, // monsterCpuAddress will be recalculated
+                0  // monsterRomAddress will be recalculated
+            );
+            level.originalIndex = ld.originalIndex;
+            level.isDeleted = ld.isDeleted || false;
+            level.modified = false;
+            this.levels.push(level);
+        }
+        
+        // Recalculate addresses and write to ROM
+        this.updateLevelAddresses();
+        this.updateRomData();
+        
+        return true;
+    }
 }

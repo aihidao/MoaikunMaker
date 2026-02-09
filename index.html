@@ -152,6 +152,13 @@
 
             <!-- <div class="drag-tip" data-i18n="dragTip">💡 拖动关卡可调整顺序</div> -->
             <div id="levelList" @touchmove.stop.prevent  class="level-list"></div>
+            
+            <!-- 备份关卡列表 -->
+            <div id="backupSection" class="backup-section" style="display: none;">
+                <h3 class="backup-section-title" data-i18n="unsavedBackups">⚠️ 未保存的关卡备份</h3>
+                <p class="backup-section-hint" data-i18n="backupHint">以下关卡在切换时未保存，点击可恢复到对应关卡。</p>
+                <div id="backupLevelList" class="backup-level-list"></div>
+            </div>
         </div>
 
         <div class="main-content">

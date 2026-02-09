@@ -133,4 +133,11 @@ const translations_enUS = {
     'enemyCount': '👾 Enemy Count Statistics',
     'warning': 'Warning',
     'enemyCountWarning': 'Total enemy count should be kept below 78, otherwise enemy data will overwrite other data, but no specific issues have been tested yet.',
+    
+    // Backup Levels
+    'unsavedBackups': '⚠️ Unsaved Level Backups',
+    'backupHint': 'These levels were not saved when switching. Click to restore to the corresponding level.',
+    'deleteBackup': 'Delete Backup',
+    'levelBackupCreated': 'Level {level} has been backed up',
+    'backupRestoredSuccess': 'Level {level} restored from backup',
 };

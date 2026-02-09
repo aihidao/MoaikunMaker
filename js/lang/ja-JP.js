@@ -133,4 +133,11 @@ const translations_jaJP = {
     'enemyCount': '👾 敵の数の統計',
     'warning': '警告',
     'enemyCountWarning': '敵の総数は78個以下に保つ必要があります。それ以上にすると敵データが他のデータを上書きしますが、現時点では具体的な問題はテストされていません。',
+    
+    // Backup Levels
+    'unsavedBackups': '⚠️ 未保存のステージバックアップ',
+    'backupHint': '以下のステージは切り替え時に保存されませんでした。クリックして対応するステージに復元できます。',
+    'deleteBackup': 'バックアップを削除',
+    'levelBackupCreated': 'ステージ {level} がバックアップされました',
+    'backupRestoredSuccess': 'ステージ {level} がバックアップから復元されました',
 };

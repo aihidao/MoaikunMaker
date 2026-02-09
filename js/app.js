@@ -41,6 +41,12 @@ class App {
         this.sortable = null;
         //
         this.toggleInfoItems(false);
+        
+        // Backup levels list (unsaved levels)
+        this.backupLevels = [];
+        
+        // Original ROM data (for re-patching on cache load)
+        this.originalRomData = null;
     }
     
     /**
@@ -70,10 +76,32 @@ class App {
             const cachedRom = await this.romCache.loadRom();
             
             if (cachedRom) {
-                // Auto-load cached ROM
+                // Load original ROM (will go through loadROM which applies patches)
                 this.loadRomData(cachedRom.data, cachedRom.fileName, true);
-                //this.initParams();
-                //this.selectLevel(this.currentLevel);
+                
+                // Load saved level data and apply on top of patched ROM
+                const cachedLevelData = await this.romCache.loadLevelData();
+                if (cachedLevelData && cachedLevelData.levels) {
+                    const imported = this.romEditor.importLevelsData(
+                        cachedLevelData.levels, 
+                        cachedLevelData.levelCount
+                    );
+                    if (imported) {
+                        // Recreate level list with imported data
+                        levelCountInput.value = this.romEditor.getLevelCount();
+                        this.createLevelList();
+                        this.updateMemoryOverview();
+                        console.log('关卡数据已从缓存恢复');
+                    }
+                }
+                
+                // Load backup levels
+                const cachedBackups = await this.romCache.loadBackupLevels();
+                if (cachedBackups && cachedBackups.length > 0) {
+                    this.backupLevels = cachedBackups;
+                    this.renderBackupList();
+                }
+                
                 this.showMessage('info', i18n.t('loadedFromCacheMessage', {fileName: cachedRom.fileName}));
             }else{
                 const urlParams = new URLSearchParams(window.location.search);
@@ -291,9 +319,11 @@ class App {
         reader.onload = async (e) => {
             this.loadRomData(e.target.result, file.name, false);
             
-            // Save to cache
+            // Save original ROM to cache
             try {
                 await this.romCache.saveRom(e.target.result, file.name);
+                // Also save initial level data
+                await this.saveLevelDataToCache();
             } catch (error) {
                 console.error('Failed to save to cache:', error);
             }
@@ -626,9 +656,14 @@ class App {
     selectLevel(index) {
         if(index === -1){
             app.showMessage('warning', "");
-            //app.showMessage('warning', i18n.t("rom"));
             return;
         }
+        
+        // Backup current unsaved level before switching
+        if (this.currentLevel >= 0 && this.currentLevel !== index && this.levelEditor && this.levelEditor.modified) {
+            this.backupCurrentLevel();
+        }
+        
         this.currentLevel = index;
         const level = this.romEditor.getLevel(index);
         
@@ -1033,16 +1068,16 @@ class App {
             //this.showMessage('success', `Level ${this.currentLevel + 1} saved successfully! Map and monster data updated.`);
             this.showMessage('success', i18n.t("saveMapSuccess", {currentLevel: this.currentLevel + 1}));
             
-            // Save to cache
-            this.romCache.saveRom(this.romEditor.romData, this.fileName).catch((error) => {
-                console.error('Failed to save to cache:', error);
-            });
+            // Save level data to cache (not the full ROM)
+            this.saveLevelDataToCache();
 
             // Refresh display
             this.selectLevel(this.currentLevel);
             this.updateMemoryOverview();
             this.writeRomBtn.disabled = false;
             level.modified = true;
+            // Mark level as unmodified after save
+            this.levelEditor.modified = false;
             this.saveBtn.disabled = true;
         } catch (error) {
             //console.error('Failed to save level:', error);
@@ -1065,16 +1100,12 @@ class App {
                 return;
             }
             
-            // Save to cache
-            this.romCache.saveRom(this.romEditor.romData, this.fileName).catch((error) => {
-                console.error('Failed to save to cache:', error);
-            });
+            // Save level data to cache (not the full ROM)
+            this.saveLevelDataToCache();
 
             this.romEditor.modified = false;
             this.showMessage('success', i18n.t("write2RomSuccess"));
-            //console.log('ROM data written successfully');
         } catch (error) {
-            //console.error('Failed to write to ROM:', error);
             this.showMessage('error', i18n.t("write2RomFiledError", {error: error.message}));
         }
     }
@@ -1338,6 +1369,164 @@ class App {
             navigator.vibrate(ms);
         } catch (err) {
             console.log("Vibration blocked", err);
+        }
+    }
+    
+    /**
+     * Save level data to cache (separate from ROM)
+     */
+    saveLevelDataToCache() {
+        try {
+            const levelsData = this.romEditor.exportLevelsData();
+            const levelCount = this.romEditor.getLevelCount();
+            this.romCache.saveLevelData(levelsData, levelCount).catch((error) => {
+                console.error('Failed to save level data to cache:', error);
+            });
+        } catch (error) {
+            console.error('Failed to export level data:', error);
+        }
+    }
+    
+    /**
+     * Backup current unsaved level before switching
+     */
+    backupCurrentLevel() {
+        try {
+            const editorData = this.getLevelEditorData();
+            if (!editorData) return;
+            
+            const levelRomData = DataConverter.fromLevelEditorToROMData(editorData, this.levelEditor.isWideScreen);
+            
+            // Create backup entry
+            const backup = {
+                levelIndex: this.currentLevel,
+                levelNumber: this.currentLevel + 1,
+                data: [...levelRomData.mapData],
+                monsterData: [...levelRomData.monsterData],
+                timestamp: Date.now()
+            };
+            
+            // Check if there's already a backup for this level, replace it
+            const existingIndex = this.backupLevels.findIndex(b => b.levelIndex === this.currentLevel);
+            if (existingIndex >= 0) {
+                this.backupLevels[existingIndex] = backup;
+            } else {
+                this.backupLevels.push(backup);
+            }
+            
+            // Save backups to cache
+            this.romCache.saveBackupLevels(this.backupLevels).catch((error) => {
+                console.error('Failed to save backup levels:', error);
+            });
+            
+            // Render backup list UI
+            this.renderBackupList();
+            
+            this.showMessage('warning', i18n.t('levelBackupCreated', {level: this.currentLevel + 1}));
+        } catch (error) {
+            console.error('Failed to backup level:', error);
+        }
+    }
+    
+    /**
+     * Restore a backup level (apply to the level list, old data goes to backup)
+     * @param {number} backupIndex - Index in the backup list
+     */
+    restoreBackupLevel(backupIndex) {
+        const backup = this.backupLevels[backupIndex];
+        if (!backup) return;
+        
+        const targetLevel = this.romEditor.getLevel(backup.levelIndex);
+        if (!targetLevel) {
+            this.showMessage('error', i18n.t('invalidLevelIndexError'));
+            return;
+        }
+        
+        // Save current level data to backup (swap)
+        const currentBackup = {
+            levelIndex: backup.levelIndex,
+            levelNumber: backup.levelNumber,
+            data: [...targetLevel.data],
+            monsterData: [...targetLevel.monsterData],
+            timestamp: Date.now()
+        };
+        
+        // Apply backup data to the level
+        targetLevel.saveMapData(backup.data);
+        targetLevel.saveMonsterData(backup.monsterData);
+        
+        // Replace the backup entry with the old level data
+        this.backupLevels[backupIndex] = currentBackup;
+        
+        // Save everything
+        this.romEditor.updateRomData();
+        this.saveLevelDataToCache();
+        this.romCache.saveBackupLevels(this.backupLevels).catch((error) => {
+            console.error('Failed to save backup levels:', error);
+        });
+        
+        // Refresh display
+        this.renderBackupList();
+        this.createLevelList();
+        this.updateMemoryOverview();
+        
+        //if (this.currentLevel === backup.levelIndex) {
+            this.selectLevel(backup.levelIndex);
+        //}
+        
+        this.showMessage('success', i18n.t('backupRestoredSuccess', {level: backup.levelNumber}));
+    }
+    
+    /**
+     * Delete a backup level
+     * @param {number} backupIndex - Index in the backup list
+     */
+    deleteBackupLevel(backupIndex) {
+        this.backupLevels.splice(backupIndex, 1);
+        
+        // Save to cache
+        this.romCache.saveBackupLevels(this.backupLevels).catch((error) => {
+            console.error('Failed to save backup levels:', error);
+        });
+        
+        // Update UI
+        this.renderBackupList();
+    }
+    
+    /**
+     * Render backup levels list in sidebar
+     */
+    renderBackupList() {
+        let container = document.getElementById('backupLevelList');
+        let section = document.getElementById('backupSection');
+        
+        if (!container || !section) return;
+        
+        container.innerHTML = '';
+        
+        if (this.backupLevels.length === 0) {
+            section.style.display = 'none';
+            return;
+        }
+        
+        section.style.display = 'block';
+        
+        for (let i = 0; i < this.backupLevels.length; i++) {
+            const backup = this.backupLevels[i];
+            const item = document.createElement('div');
+            item.className = 'backup-level-item';
+            
+            const timeStr = new Date(backup.timestamp).toLocaleTimeString();
+            
+            item.innerHTML = `
+                <div class="backup-level-content" onclick="app.restoreBackupLevel(${i})">
+                    <span class="backup-level-num">${i18n.t('levelLabel', {level: backup.levelNumber})}</span>
+                    <span class="backup-level-time">${timeStr}</span>
+                </div>
+                <button class="backup-delete-btn" onclick="event.stopPropagation(); app.deleteBackupLevel(${i})" title="${i18n.t('deleteBackup')}">🗑️</button>
+            `;
+            
+            container.appendChild(item);
         }
     }
 }

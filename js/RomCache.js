@@ -1,5 +1,10 @@
 /**
  * ROM 文件缓存管理器（使用 IndexedDB）
+ * 
+ * 存储结构：
+ * - 'originalRom': 原始 ROM 数据（未修改的）
+ * - 'levelData': 所有关卡数据（独立于 ROM 存储）
+ * - 'backupLevels': 未保存的关卡备份列表
  */
 class RomCache {
     static instance = null;
@@ -9,6 +14,8 @@ class RomCache {
         this.storeName = 'roms';
         this.db = null;
         this.cacheKey = 'lastRom';
+        this.levelDataKey = 'levelData';
+        this.backupKey = 'backupLevels';
     }
     
     static getInstance() {
@@ -23,7 +30,7 @@ class RomCache {
      */
     async init() {
         return new Promise((resolve, reject) => {
-            const request = indexedDB.open(this.dbName, 1);
+            const request = indexedDB.open(this.dbName, 2);
             
             request.onerror = () => {
                 console.error('无法打开 IndexedDB:', request.error);
@@ -47,8 +54,8 @@ class RomCache {
     }
     
     /**
-     * 保存 ROM 文件到缓存
-     * @param {ArrayBuffer} data - ROM 数据
+     * 保存原始 ROM 文件到缓存（玩家上传时调用，只保存原始未修改的 ROM）
+     * @param {ArrayBuffer} data - 原始 ROM 数据
      * @param {string} fileName - 文件名
      */
     async saveRom(data, fileName) {
@@ -64,18 +71,147 @@ class RomCache {
                 data: data,
                 fileName: fileName,
                 timestamp: Date.now(),
-                size: data.byteLength
+                size: data.byteLength || data.length
             };
             
             const request = store.put(romData, this.cacheKey);
             
             request.onsuccess = () => {
-                console.log(`ROM 已缓存: ${fileName} (${data.byteLength} 字节)`);
+                console.log(`ROM 已缓存: ${fileName} (${romData.size} 字节)`);
                 resolve();
             };
             
             request.onerror = () => {
                 console.error('缓存 ROM 失败:', request.error);
+                reject(request.error);
+            };
+        });
+    }
+    
+    /**
+     * 保存关卡数据到缓存（独立于 ROM 保存）
+     * @param {Array} levelsData - 序列化的关卡数据数组
+     * @param {number} levelCount - 关卡总数
+     */
+    async saveLevelData(levelsData, levelCount) {
+        if (!this.db) {
+            await this.init();
+        }
+        
+        return new Promise((resolve, reject) => {
+            const transaction = this.db.transaction([this.storeName], 'readwrite');
+            const store = transaction.objectStore(this.storeName);
+            
+            const data = {
+                levels: levelsData,
+                levelCount: levelCount,
+                timestamp: Date.now()
+            };
+            
+            const request = store.put(data, this.levelDataKey);
+            
+            request.onsuccess = () => {
+                console.log(`关卡数据已缓存: ${levelsData.length} 个关卡`);
+                resolve();
+            };
+            
+            request.onerror = () => {
+                console.error('缓存关卡数据失败:', request.error);
+                reject(request.error);
+            };
+        });
+    }
+    
+    /**
+     * 从缓存加载关卡数据
+     * @returns {Promise<{levels: Array, levelCount: number}|null>}
+     */
+    async loadLevelData() {
+        if (!this.db) {
+            await this.init();
+        }
+        
+        return new Promise((resolve, reject) => {
+            const transaction = this.db.transaction([this.storeName], 'readonly');
+            const store = transaction.objectStore(this.storeName);
+            const request = store.get(this.levelDataKey);
+            
+            request.onsuccess = () => {
+                const result = request.result;
+                if (result) {
+                    console.log(`从缓存加载关卡数据: ${result.levels.length} 个关卡`);
+                    resolve(result);
+                } else {
+                    console.log('缓存中没有关卡数据');
+                    resolve(null);
+                }
+            };
+            
+            request.onerror = () => {
+                console.error('读取关卡缓存失败:', request.error);
+                reject(request.error);
+            };
+        });
+    }
+    
+    /**
+     * 保存备份关卡到缓存
+     * @param {Array} backupLevels - 序列化的备份关卡数组
+     */
+    async saveBackupLevels(backupLevels) {
+        if (!this.db) {
+            await this.init();
+        }
+        
+        return new Promise((resolve, reject) => {
+            const transaction = this.db.transaction([this.storeName], 'readwrite');
+            const store = transaction.objectStore(this.storeName);
+            
+            const data = {
+                backups: backupLevels,
+                timestamp: Date.now()
+            };
+            
+            const request = store.put(data, this.backupKey);
+            
+            request.onsuccess = () => {
+                console.log(`备份关卡已缓存: ${backupLevels.length} 个`);
+                resolve();
+            };
+            
+            request.onerror = () => {
+                console.error('缓存备份关卡失败:', request.error);
+                reject(request.error);
+            };
+        });
+    }
+    
+    /**
+     * 从缓存加载备份关卡
+     * @returns {Promise<Array|null>}
+     */
+    async loadBackupLevels() {
+        if (!this.db) {
+            await this.init();
+        }
+        
+        return new Promise((resolve, reject) => {
+            const transaction = this.db.transaction([this.storeName], 'readonly');
+            const store = transaction.objectStore(this.storeName);
+            const request = store.get(this.backupKey);
+            
+            request.onsuccess = () => {
+                const result = request.result;
+                if (result && result.backups) {
+                    console.log(`从缓存加载备份关卡: ${result.backups.length} 个`);
+                    resolve(result.backups);
+                } else {
+                    resolve([]);
+                }
+            };
+            
+            request.onerror = () => {
+                console.error('读取备份缓存失败:', request.error);
                 reject(request.error);
             };
         });
@@ -130,10 +266,10 @@ class RomCache {
         return new Promise((resolve, reject) => {
             const transaction = this.db.transaction([this.storeName], 'readwrite');
             const store = transaction.objectStore(this.storeName);
-            const request = store.delete(this.cacheKey);
+            const request = store.clear();
             
             request.onsuccess = () => {
-                console.log('缓存已清除');
+                console.log('所有缓存已清除');
                 resolve();
             };
             
