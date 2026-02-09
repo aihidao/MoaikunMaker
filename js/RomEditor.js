@@ -335,6 +335,17 @@ class RomEditor {
                 error: sizeCheckResult.error
             };
         }
+
+        // 0.1 Check total enemy count (max 78 due to ROM structure)
+        const enemyCheckResult = RomEditor.checkTotalEnemyCount(levels, levelCount);
+        if (!enemyCheckResult.valid) {
+            return {
+                success: false,
+                error: enemyCheckResult.error
+            };
+        }
+
+        //
         
         // 1. Write level count
         romData[Config.LEVEL_COUNT_ADDRESS] = levelCount + 1;
@@ -461,6 +472,45 @@ class RomEditor {
             valid: true,
             totalSize: totalSize,
             maxSize: MAX_LEVEL_DATA_SIZE
+        };
+    }
+
+    /**
+     * Check if total enemy count exceeds the maximum allowed (78 enemies)
+     * @param {Array} levels - Array of level objects
+     * @param {number} levelCount - Number of levels
+     * @returns {Object} Object containing valid status and error message if invalid
+     */
+    static checkTotalEnemyCount(levels, levelCount) {
+        const MAX_ENEMY_COUNT = 78; // Maximum total enemies due to ROM storage structure
+        
+        // Calculate total enemy count across all levels
+        let totalEnemies = 0;
+        for (let i = 0; i < levelCount; i++) {
+            const monsterData = levels[i].monsterData;
+            if (monsterData && monsterData.length > 0) {
+                // First byte is (enemy count * 2 + 1), so calculate actual enemy count
+                const enemyCount = Math.floor((monsterData[0] - 1) / 2);
+                totalEnemies += enemyCount;
+            }
+        }
+        
+        if (totalEnemies > MAX_ENEMY_COUNT) {
+            return {
+                valid: false,
+                totalEnemies: totalEnemies,
+                maxEnemies: MAX_ENEMY_COUNT,
+                error: i18n.t('totalEnemyCountExceedError', {
+                    currentCount: totalEnemies,
+                    maxCount: MAX_ENEMY_COUNT
+                })
+            };
+        }
+        
+        return {
+            valid: true,
+            totalEnemies: totalEnemies,
+            maxEnemies: MAX_ENEMY_COUNT
         };
     }
 

@@ -130,9 +130,10 @@ const translations_jaJP = {
     'consecutiveMoaiError': "システムの制限により、14個の連続したモアイNPCを防ぐことはできません。そうしないと、圧縮されたデータがマップの終わりを示すことになります。",
     'buggyEnemy9PlaceInfo': "第2画面に配置された火を吹く像はゲーム内でバグが発生する可能性があります。第1画面にのみ配置することをお勧めします。",
     'levelDataSizeExceedError': 'ステージデータのサイズが制限を超えています！現在のサイズ: {currentSize}バイト、最大許容: {maxSize}バイト。ステージ数を減らすか、ステージ内容を簡略化してから再試行してください。',
+    'totalEnemyCountExceedError': '⚠️ 敵の総数が制限を超えています！ROMストレージ構造の制限により、全ステージの敵の総数は{maxCount}個を超えることができません。現在の数: {currentCount}個。追加する前にいくつかの敵を削除してください。',
     'enemyCount': '👾 敵の数の統計',
     'warning': '警告',
-    'enemyCountWarning': '敵の総数は78個以下に保つ必要があります。それ以上にすると敵データが他のデータを上書きしますが、現時点では具体的な問題はテストされていません。',
+    'enemyCountWarning': '敵の総数は78個以下に保つ必要があります。それ以上にすると他の重要なデータが上書きされる可能性があります。',
     
     // Backup Levels
     'unsavedBackups': '⚠️ 未保存のステージバックアップ',

@@ -1147,3 +1147,57 @@ button {
         }
     }
 }
+
+/* GitHub Footer */
+.github-footer {
+    padding: 30px 20px;
+    margin-top: 40px;
+    background: #fff;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.github-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #24292e;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.github-link:hover {
+    background: rgba(0, 0, 0, 0.05);
+    transform: translateY(-2px);
+}
+
+.github-link svg {
+    transition: transform 0.3s ease;
+}
+
+.github-link:hover svg {
+    transform: rotate(360deg);
+}
+
+/* 移动端优化 */
+@media (max-width: 768px) {
+    .github-footer {
+        padding: 10px 15px;
+    }
+    
+    .github-link {
+        font-size: 13px;
+        padding: 6px 12px;
+    }
+    
+    .github-link svg {
+        width: 20px;
+        height: 20px;
+    }
+}
