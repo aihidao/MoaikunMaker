@@ -130,4 +130,7 @@ const translations_enUS = {
     'consecutiveMoaiError': "Due to system limitations, it is not possible to prevent 14 consecutive Moai NPCs, otherwise the compressed data indicates the end of the map.",
     'buggyEnemy9PlaceInfo': "Placing the fire-breathing statue in the second screen may cause bugs in the game. It is recommended to place it only in the first screen.",
     'levelDataSizeExceedError': 'Level data size exceeds limit! Current size: {currentSize} bytes, maximum allowed: {maxSize} bytes. Please reduce the number of levels or simplify level content and try again.',
+    'enemyCount': '👾 Enemy Count Statistics',
+    'warning': 'Warning',
+    'enemyCountWarning': 'Total enemy count should be kept below 78, otherwise enemy data will overwrite other data, but no specific issues have been tested yet.',
 };

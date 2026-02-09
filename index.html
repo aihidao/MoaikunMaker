@@ -272,31 +272,25 @@
             <div class="memory-overview" id="memoryOverview">
                 <h3 data-i18n="memoryUsage">💾 内存使用情况</h3>
 
-                <!-- <div class="memory-stats">
-                    <div class="memory-stat">
-                        <div class="memory-stat-label">已使用</div>
-                        <div class="memory-stat-value used" id="memoryUsed">0</div>
-                    </div>
-                    <div class="memory-stat">
-                        <div class="memory-stat-label">可用空间</div>
-                        <div class="memory-stat-value free" id="memoryFree">0</div>
-                    </div>
-                    <div class="memory-stat">
-                        <div class="memory-stat-label">总容量</div>
-                        <div class="memory-stat-value" id="memoryTotal">0</div>
-                    </div>
-                    <div class="memory-stat">
-                        <div class="memory-stat-label">使用率</div>
-                        <div class="memory-stat-value percent" id="memoryPercent">0%</div>
-                    </div>
-                </div> -->
-
                 <div class="memory-bar-container">
                     <div class="memory-bar-fill" id="memoryBarFill" style="width: 0%"></div>
                     <div class="memory-bar-text" id="memoryBarText">0 / 0 Byte</div>
                 </div>
 
                 <div class="memory-segments" id="memorySegments"></div>
+                
+                <!-- 敌人数量统计 -->
+                <div style="margin-top: 20px;">
+                    <h3 data-i18n="enemyCount">👾 敌人数量统计</h3>
+                    <div class="memory-bar-container">
+                        <div class="memory-bar-fill" id="enemyCountBarFill" style="width: 0%"></div>
+                        <div class="memory-bar-text" id="enemyCountBarText">0 / 78</div>
+                    </div>
+                    <div id="enemyCountWarning" style="display: none; margin-top: 10px; padding: 10px; background: #fff3cd; border: 1px solid #ffc107; border-radius: 4px; color: #856404; font-size: 13px;">
+                        <strong>⚠️ <span data-i18n="warning">警告</span>:</strong>
+                        <span data-i18n="enemyCountWarning">敌人总数应保持在78个以下，否则敌人数据会覆盖其他数据，但目前没有测试到有哪些问题。</span>
+                    </div>
+                </div>
             </div>
             <!-- 移动端游戏控制面板 -->
             <div class="mobile-game-controls" id="mobileGameControls">

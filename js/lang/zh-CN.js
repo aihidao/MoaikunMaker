@@ -130,4 +130,7 @@ const translations_zhCN = {
     'consecutiveMoaiError': "由于系统限制，无法防止连续14个摩艾 NPC，否则压缩后的数据意味着地图结束符号。",
     'buggyEnemy9PlaceInfo': "放置在第二屏的喷火像会在游戏中有bug，建议只放在第一屏。",
     'levelDataSizeExceedError': '关卡数据大小超出限制！当前大小: {currentSize} 字节，最大允许: {maxSize} 字节。请减少关卡数量或简化关卡内容后重试。',
+    'enemyCount': '👾 敌人数量统计',
+    'warning': '警告',
+    'enemyCountWarning': '敌人总数应保持在78个以下，否则敌人数据会覆盖其他数据，但目前没有测试到有哪些问题。',
 };

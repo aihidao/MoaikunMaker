@@ -1187,8 +1187,61 @@ class App {
 
         // Generate segment display
         this.generateMemorySegments(levels, maxSize);
+        
+        // Update enemy count statistics
+        this.updateEnemyCountOverview(levels);
 
         document.getElementById('memoryOverview').style.display = 'block';
+    }
+    
+    /**
+     * Update enemy count overview
+     */
+    updateEnemyCountOverview(levels) {
+        const MAX_ENEMIES = 78;
+        let totalEnemies = 0;
+        
+        // Calculate total enemy count from all levels
+        for (let level of levels) {
+            const monsterData = level.monsterData;
+            if (monsterData && monsterData.length > 0) {
+                const firstByte = monsterData[0];
+                // First byte format: enemy count * 2 + 1
+                if (firstByte > 1) {
+                    const enemyCount = (firstByte - 1) / 2;
+                    totalEnemies += enemyCount;
+                }
+            }
+        }
+        
+        // Update enemy count display
+        const percentage = Math.min((totalEnemies / MAX_ENEMIES) * 100, 100).toFixed(1);
+        const barFill = document.getElementById('enemyCountBarFill');
+        const barText = document.getElementById('enemyCountBarText');
+        const warning = document.getElementById('enemyCountWarning');
+        
+        if (barFill && barText) {
+            barFill.style.width = `${percentage}%`;
+            barText.textContent = `${totalEnemies} / ${MAX_ENEMIES}`;
+            
+            // Change color based on count
+            if (totalEnemies > MAX_ENEMIES) {
+                barFill.style.backgroundColor = '#dc3545'; // Red
+            } else if (totalEnemies > MAX_ENEMIES * 0.9) {
+                barFill.style.backgroundColor = '#ffc107'; // Yellow
+            } else {
+                barFill.style.backgroundColor = '#4CAF50'; // Green
+            }
+        }
+        
+        // Show/hide warning
+        if (warning) {
+            if (totalEnemies > MAX_ENEMIES) {
+                warning.style.display = 'block';
+            } else {
+                warning.style.display = 'none';
+            }
+        }
     }
 
     /**
